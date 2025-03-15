@@ -128,6 +128,8 @@ class DailyPriceUpdater:
         # get timestamp from URI for `updated_at`` field in database
         # change special characters to fit our existing datetime format
         timestamp = bulk_info.get('updated_at', '').replace(':', '-').replace('+', '-')
+        data_type = bulk_info.get('type', 'default_cards')
+
 
         # create cache filename based on timestamp to ensure no collisions
         filename = f"{bulk_info.get('type')}-{timestamp}.json"
@@ -138,6 +140,9 @@ class DailyPriceUpdater:
             logger.info(f"Using cached bulk data file at: {output_path}")
             return output_path
         
+
+        # clean up older files of the same kind before downloading new ones
+        self._cleanup_old_bulk_files(data_type, output_path)
         # Download the file
         try:
             logger.info(f"Downloading bulk data from {download_uri}...")
@@ -154,6 +159,49 @@ class DailyPriceUpdater:
         except Exception as e:
             logger.error(f"Error downloading bulk data: {e}")
             return None
+    
+    def _cleanup_old_bulk_files(self, data_type: str, new_file_path: Path) -> None:
+        """
+        Cleans up older bulk data files of the same type to save disk space.
+        
+        Args:
+            data_type: Type of bulk data (e.g., "default_cards")
+            new_file_path: Path to the newly downloaded file (which should be kept)
+        """
+        try:
+            # Find all existing files of the same type
+            pattern = f"{data_type}-*.json"
+            existing_files = list(self.cache_dir.glob(pattern))
+            
+            # Skip if there are no existing files or only the new file
+            if not existing_files or (len(existing_files) == 1 and existing_files[0] == new_file_path):
+                return
+                
+            # Log what we found
+            logger.info(f"Found {len(existing_files)} existing bulk data files of type '{data_type}'")
+            
+            # Keep track of how much space we free
+            bytes_freed = 0
+            
+            # Delete older files (skip the new file we're just downloading)
+            for file_path in existing_files:
+                if file_path != new_file_path:
+                    # Get file size before deleting for our log
+                    try:
+                        file_size = file_path.stat().st_size
+                        file_path.unlink()
+                        bytes_freed += file_size
+                        logger.info(f"Deleted old bulk data file: {file_path.name} ({file_size / (1024*1024):.2f} MB)")
+                    except Exception as e:
+                        logger.warning(f"Failed to delete old bulk data file {file_path.name}: {e}")
+            
+            # Log total space saved
+            if bytes_freed > 0:
+                logger.info(f"Freed up {bytes_freed / (1024*1024):.2f} MB of disk space")
+                
+        except Exception as e:
+            logger.error(f"Error during bulk data cleanup: {e}")
+            # Continue with the download even if cleanup fails
     
 
     ## DATA EXTRACTION METHODS ##
