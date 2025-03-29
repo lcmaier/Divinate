@@ -1,8 +1,16 @@
 // app/dashboard/price-history/search-results.tsx
 'use client';
 
+
 import SearchResultCard from './search-result-card'; 
 import { CardDetails } from "@/app/lib/card-data";
+import { 
+    ChevronLeftIcon, 
+    ChevronRightIcon, 
+    ArrowsUpDownIcon,
+    AdjustmentsHorizontalIcon
+} from '@heroicons/react/24/outline';
+import { CheckCircleIcon } from "@heroicons/react/24/outline";
 
 
 interface SearchResultsProps {
@@ -69,15 +77,25 @@ export default function SearchResults({
     };
 
     return (
-        <div className="mt-8 bg-gray-50 p-6 rounded-lg border border-gray-200">
-            <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-4 gap-4">
-                <h2 className="text-lg font-semibold">Search Results</h2>
+        <div className="mt-8 bg-white p-6 rounded-xl border border-zinc-200 shadow-sm">
+            <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-6 gap-4">
+                <h2 className="text-xl font-semibold text-zinc-900 flex items-center">
+                    <span>Search Results</span>
+                    {totalResults > 0 && (
+                        <span className="ml-2 px-2 py-0.5 bg-blue-100 text-blue-800 text-sm rounded-full">
+                            {totalResults}
+                        </span>
+                    )}
+                </h2>
 
                 <div className="flex flex-col md:flex-row md:items-center gap-4">
                     <div className="flex items-center gap-2">
-                        <div className="text-sm text-gray-500 whitespace-nowrap">Sort by:</div>
+                        <div className="text-sm font-medium text-zinc-600 whitespace-nowrap flex items-center">
+                            <ArrowsUpDownIcon className="h-4 w-4 mr-1.5" />
+                            Sort by:
+                        </div>
                         <select
-                            className="border border-gray-300 rounded px-2 py-1 text-sm"
+                            className="border border-zinc-300 rounded-lg px-3 py-1.5 text-sm bg-white shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
                             onChange={(e) => onSortChange(e.target.value)}
                         >
                             {sortOptions.map(option => (
@@ -89,8 +107,12 @@ export default function SearchResults({
                     </div>
 
                     <div className="flex items-center gap-2">
+                        <div className="text-sm font-medium text-zinc-600 whitespace-nowrap flex items-center">
+                            <AdjustmentsHorizontalIcon className="h-4 w-4 mr-1.5" />
+                            Show:
+                        </div>
                         <select
-                            className="border border-gray-300 rounded px-2 py-1 text-sm min-w-[120px]"
+                            className="border border-zinc-300 rounded-lg px-3 py-1.5 text-sm bg-white shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
                             value={itemsPerPage}
                             onChange={(e) => onItemsPerPageChange(Number(e.target.value))}
                         >
@@ -107,55 +129,68 @@ export default function SearchResults({
             </div>
             
 
-            {/* Compare Selected Panel - shows only when items are selected, but we fix the position to not shove the screen down when it becomes visible */}
+            {/* Compare Selected Panel - shows only when items are selected */}
             <div className="sticky top-0 z-20">
                 <div 
-                    className={`bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4 
-                    flex flex-col md:flex-row md:justify-between md:items-center gap-2
+                    className={`bg-blue-50 border border-blue-200 rounded-xl p-4 mb-6 
+                    flex flex-col md:flex-row md:justify-between md:items-center gap-3
                     transition-all duration-300 ease-in-out overflow-hidden
                     ${selectedCards.length > 0 
-                        ? 'max-h-24 opacity-100 transform translate-y-0' 
+                        ? 'max-h-24 opacity-100 transform translate-y-0 shadow-sm' 
                         : 'max-h-0 opacity-0 transform -translate-y-4 border-0 p-0 mb-0'}`}
                 >
-                    <div className="text-blue-800 font-medium">
-                    {selectedCards.length} card{selectedCards.length !== 1 ? 's' : ''} selected
+                    <div className="text-blue-800 font-medium flex items-center">
+                        <CheckCircleIcon className="h-5 w-5 mr-2 text-blue-500" />
+                        {selectedCards.length} card{selectedCards.length !== 1 ? 's' : ''} selected
                     </div>
-                    <div className="flex space-x-2">
-                    <button
-                        className="px-3 py-1.5 text-sm bg-white border border-gray-300 rounded-md hover:bg-gray-50"
-                        onClick={clearSelections}
-                    >
-                        Clear Selections
-                    </button>
-                    <button
-                        className="px-3 py-1.5 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700"
-                        onClick={onCompareSelected}
-                        disabled={selectedCards.length < 2}
-                    >
-                        Compare Selected
-                    </button>
+                    <div className="flex space-x-3">
+                        <button
+                            className="px-3 py-2 text-sm bg-white border border-zinc-300 rounded-lg hover:bg-zinc-50 shadow-sm hover:shadow transition-all duration-200 font-medium text-zinc-700"
+                            onClick={clearSelections}
+                        >
+                            Clear Selections
+                        </button>
+                        <button
+                            className="px-3 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 shadow-sm hover:shadow transition-all duration-200 font-medium"
+                            onClick={onCompareSelected}
+                            disabled={selectedCards.length < 2}
+                        >
+                            Compare Selected
+                        </button>
                     </div>
                 </div>
-                </div>
+            </div>
 
-            {/* Search results in 3 parts: Loading block, Results found block, no results found block */}
+            {/* Search results states: Loading, Results found, No results */}
             {isLoading ? ( 
-                <div className="space-y-4">
+                <div className="space-y-6">
                     {Array.from({ length: 3 }).map((_, i) => (
-                        <div key={i} className="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
+                        <div key={i} className="bg-white p-6 rounded-xl border border-zinc-200 shadow-sm">
                             <div className="animate-pulse flex">
-                                <div className="mr-4 h-4 w-4 bg-gray-200 rounded"></div>
-                                <div className="flex-1 space-y-4">
-                                <div className="h-32 bg-gray-200 rounded"></div>
-                                    <div className="h-4 w-3/4 bg-gray-200 rounded"></div>
-                                    <div className="h-3 w-1/2 bg-gray-200 rounded"></div>
+                                <div className="mr-4 h-5 w-5 bg-zinc-200 rounded"></div>
+                                <div className="flex-1 space-y-4 py-1">
+                                    <div className="h-36 w-24 bg-zinc-200 rounded-lg float-left mr-4"></div>
+                                    <div className="space-y-2">
+                                        <div className="h-5 w-3/4 bg-zinc-200 rounded"></div>
+                                        <div className="h-4 w-1/2 bg-zinc-200 rounded"></div>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <div className="h-4 w-5/6 bg-zinc-200 rounded"></div>
+                                        <div className="h-4 w-3/4 bg-zinc-200 rounded"></div>
+                                    </div>
+                                    <div className="grid grid-cols-4 gap-3">
+                                        <div className="h-10 bg-zinc-200 rounded"></div>
+                                        <div className="h-10 bg-zinc-200 rounded"></div>
+                                        <div className="h-10 bg-zinc-200 rounded"></div>
+                                        <div className="h-10 bg-zinc-200 rounded"></div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     ))}
                 </div>
             ) : results.length > 0 ? (
-                <div className="space-y-4">
+                <div className="space-y-6">
                     {results.map(card => (
                         <SearchResultCard
                             key={card.card_key}
@@ -166,34 +201,47 @@ export default function SearchResults({
                     ))}
                 </div>
             ) : (
-                <div className="text-center py-10 text-gray-500">
-                    <p>No results found. Try adjusting your search criteria.</p>
+                <div className="text-center py-20 px-6 border border-dashed border-zinc-300 rounded-xl bg-zinc-50">
+                    <div className="max-w-md mx-auto">
+                        <h3 className="text-lg font-semibold text-zinc-900 mb-2">No results found</h3>
+                        <p className="text-zinc-600 mb-6">Try adjusting your search criteria or using different keywords.</p>
+                        <div className="text-sm text-zinc-500">
+                            <p>Search tips:</p>
+                            <ul className="mt-2 space-y-1 list-disc list-inside">
+                                <li>Check for spelling errors</li>
+                                <li>Use fewer or more general keywords</li>
+                                <li>Try searching by set code (e.g., "ths" for Theros)</li>
+                                <li>Remove format or rarity filters</li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
             )}
 
             {/* Pagination - Only show if we have multiple pages of results */}
             {totalPages > 1 && (
-                <div className="mt-6 flex flex-col md:flex-row md:justify-between md:items-center gap-4">
-                    <div className="text-sm text-gray-500">
-                        Showing {Math.min((currentPage - 1) * itemsPerPage + 1, totalResults)}-
-                        {Math.min(currentPage * itemsPerPage, totalResults)} of {totalResults} results
+                <div className="mt-8 flex flex-col md:flex-row md:justify-between md:items-center gap-4">
+                    <div className="text-sm text-zinc-600">
+                        Showing <span className="font-medium">{Math.min((currentPage - 1) * itemsPerPage + 1, totalResults)}</span>-
+                        <span className="font-medium">{Math.min(currentPage * itemsPerPage, totalResults)}</span> of <span className="font-medium">{totalResults}</span> results
                     </div>
-                    <div className="flex flex-wrap gap-1">
+                    <div className="flex flex-wrap gap-2">
                         <button
-                            className="px-3 py-1 border border-gray-300 rounded-md bg-white text-gray-500 hover:bg-gray-50 disabled:opacity-50"
+                            className="inline-flex items-center px-4 py-2 border border-zinc-300 rounded-lg bg-white text-zinc-700 hover:bg-zinc-50 disabled:opacity-50 disabled:bg-zinc-100 disabled:cursor-not-allowed transition-colors duration-200 text-sm font-medium shadow-sm"
                             onClick={() => onPageChange(currentPage - 1)}
                             disabled={currentPage === 1}
                         >
+                            <ChevronLeftIcon className="h-4 w-4 mr-1.5" />
                             Previous
                         </button>
 
                         {pageNumbers.map(number => (
                             <button
                                 key={number}
-                                className={`px-3 py-1 border rounded-md ${
+                                className={`inline-flex items-center justify-center w-10 h-10 border rounded-lg font-medium transition-colors duration-200 text-sm ${
                                     number === currentPage
-                                        ? "bg-blue-50 text-blue-600 border-blue-300"
-                                        : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50" 
+                                        ? "bg-blue-100 text-blue-700 border-blue-300 shadow-sm"
+                                        : "bg-white text-zinc-700 border-zinc-300 hover:bg-zinc-50" 
                                 }`}
                                 onClick={() => onPageChange(number)}
                             >
@@ -202,11 +250,12 @@ export default function SearchResults({
                         ))}
 
                         <button
-                            className="px-3 py-1 border border-gray-300 rounded-md bg-white text-gray-500 hover:bg-gray-50 disabled:opacity-50"
+                            className="inline-flex items-center px-4 py-2 border border-zinc-300 rounded-lg bg-white text-zinc-700 hover:bg-zinc-50 disabled:opacity-50 disabled:bg-zinc-100 disabled:cursor-not-allowed transition-colors duration-200 text-sm font-medium shadow-sm"
                             onClick={() => onPageChange(currentPage + 1)}
                             disabled={currentPage === totalPages}
                         >
                             Next
+                            <ChevronRightIcon className="h-4 w-4 ml-1.5" />
                         </button>
                     </div>
                 </div>

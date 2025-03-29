@@ -31,6 +31,21 @@ export type CardDetails = {
       usd_foil?: string;
       usd_etched?: string;
     };
+    // New property to store the latest price data from our timeseries collection
+    latest_prices?: {
+        nonfoil?: {
+            price: number;
+            date: string;
+        };
+        foil?: {
+            price: number;
+            date: string;
+        };
+        etched?: {
+            price: number;
+            date: string;
+        };
+    };
 };
 
 // need a function to convert the superset JSON doc from the 'cards' collection into the subset of fields
@@ -51,7 +66,8 @@ function convertToCardDetails(doc: Document | null): CardDetails | null {
       oracle_text: doc.oracle_text?.toString() || '',
       rarity: doc.rarity?.toString() || '',
       released_at: doc.released_at?.toISOString() || undefined,
-      prices: doc.prices
+      prices: doc.prices,
+      latest_prices: doc.latest_prices
     };
   }
 

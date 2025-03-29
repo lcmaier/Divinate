@@ -2,24 +2,26 @@
 
 import { useEffect, useState, useMemo, useRef } from "react";
 import { PriceDataPoint, CardDetails } from "@/app/lib/card-data";
+import { FinishType } from "@/app/lib/card-constants";
 import { beleren } from '../fonts';
 import { formatCurrency } from "@/app/lib/utils";
 import HoverableCardImage from "../card-image/hoverable-card-image";
 
-type FinishType = 'all' | 'nonfoil' | 'foil' | 'etched';
+interface PriceChartProps {
+    card: CardDetails | null;
+    priceHistory: { [key: string]: PriceDataPoint[] };
+    selectedFinish: FinishType;
+    timeRange?: number;
+}
 
 // Chart component that displays price history
 export default function PriceChart({
     card,
     priceHistory,
-    selectedFinish
-}: {
-    card: CardDetails | null;
-    priceHistory: PriceDataPoint[] | { [key: string]: PriceDataPoint[] };    
-    selectedFinish: FinishType;
-}) {
+    selectedFinish,
+    timeRange = 30
+}: PriceChartProps) {
     // Setting up graceful handling when we can't grab an image for a card
-    const [imageError, setImageError] = useState(false);
     const chartContainerRef = useRef<HTMLDivElement>(null);
     const [chartDimensions, setChartDimensions] = useState({ width: 0, height: 200 });
     const [shouldScroll, setShouldScroll] = useState(false);
@@ -58,13 +60,62 @@ export default function PriceChart({
         }, {} as { [key: string]: PriceDataPoint[] });
     }, [priceHistory]);
 
+    
+    const filteredHistory = useMemo(() => {
+        // Calculate cutoff date based on number of days
+        const cutoffDate = new Date();
+        cutoffDate.setDate(cutoffDate.getDate() - timeRange);
+        cutoffDate.setHours(0, 0, 0, 0);
+
+        // filter each finish's data
+        return Object.entries(processedHistory).reduce<{ [key: string]: PriceDataPoint[]}>((filtered, [finish, dataPoints]) => {
+            filtered[finish] = dataPoints.filter(point =>
+                point.date instanceof Date && point.date >= cutoffDate
+            );
+            return filtered;
+        }, {})
+
+    }, [processedHistory, timeRange]);
+  
+
+    // Create a function to get the min/max dates across all data
+    const getConsistentDateDomain = () => {
+        // Get all dates from all finishes
+        const allDates = Object.values(filteredHistory)
+        .flat()
+        .map(point => point.date.getTime());
+        
+        if (allDates.length === 0) {
+        const today = new Date();
+        const thirtyDaysAgo = new Date();
+        thirtyDaysAgo.setDate(today.getDate() - 30);
+        return [thirtyDaysAgo, today];
+        }
+        
+        const minDate = new Date(Math.min(...allDates));
+        const maxDate = new Date(Math.max(...allDates));
+        
+        // Add padding
+        const paddedMinDate = new Date(minDate);
+        paddedMinDate.setDate(paddedMinDate.getDate() - 1);
+        
+        const paddedMaxDate = new Date(maxDate);
+        paddedMaxDate.setDate(paddedMaxDate.getDate() + 1);
+        
+        return [paddedMinDate, paddedMaxDate];
+    };
+  
+  // Calculate once and use consistently
+  const [minDate, maxDate] = useMemo(() => getConsistentDateDomain(), [filteredHistory]);
+  const timeRangeDuration = maxDate.getTime() - minDate.getTime();
+
 
     // Get an array of all available finishes that have data
     const availableFinishes = useMemo(() => {
-        return Object.entries(processedHistory)
+        return Object.entries(filteredHistory)
             .filter(([_, data]) => data && data.length > 0)
             .map(([finish, _]) => finish);
-    }, [processedHistory]);
+    }, [filteredHistory]);
 
     // memoize the image to prevent flickering on swap
     const CardImage = useMemo(() => {
@@ -138,7 +189,7 @@ export default function PriceChart({
 
         // Calculate stats for each finish
         finishesToShow.forEach(finish => {
-            const finishData = processedHistory[finish] || [];
+            const finishData = filteredHistory[finish] || [];
 
             if (finishData.length === 0) return;
             hasData = true;
@@ -197,7 +248,7 @@ export default function PriceChart({
         }
 
         return allStats;
-    }, [processedHistory, finishesToShow, selectedFinish]);
+    }, [filteredHistory, finishesToShow, selectedFinish]);
 
     // Update stats state only when calculated stats change
     useEffect(() => {
@@ -206,8 +257,8 @@ export default function PriceChart({
 
     // Get all data points for all finishes to calculate chart dimensions
     const allDataPoints = useMemo(() => 
-        finishesToShow.flatMap(finish => processedHistory[finish] || []),
-    [finishesToShow, processedHistory]);
+        finishesToShow.flatMap(finish => filteredHistory[finish] || []),
+    [finishesToShow, filteredHistory]);
     
     // Get all dates for x-axis from all finishes
     const allDates = useMemo(() => {
@@ -272,7 +323,7 @@ export default function PriceChart({
     }
 
     const hasPriceData = finishesToShow.some(finish =>
-        processedHistory[finish] && processedHistory[finish].length > 0
+        filteredHistory[finish] && filteredHistory[finish].length > 0
     );
 
     if (!hasPriceData) {
@@ -355,7 +406,7 @@ export default function PriceChart({
         let foundMatch = false;
       
         finishesToShow.forEach((finish) => {
-          const finishData = processedHistory[finish] || [];
+          const finishData = filteredHistory[finish] || [];
           if (finishData.length === 0) return;
       
           const validDataPoints = finishData.filter(
@@ -363,8 +414,8 @@ export default function PriceChart({
           );
       
           validDataPoints.forEach((point, index) => {
-            // calculate point coordinates where hover will happen
-            const pointX = (index / (validDataPoints.length - 1)) * chartDimensions.width;
+            // use dates to determine where points will be 
+            const pointX = ((point.date.getTime() - minDate.getTime()) / timeRangeDuration) * chartDimensions.width;
             let pointY;
             if (priceRange <= 0) {
                 pointY = chartDimensions.height / 2;
@@ -424,13 +475,8 @@ export default function PriceChart({
                     </p>
                 </div>
 
-                {/* Card image with error fallback */}
-                {!imageError && card?.image_uris && CardImage}
-                {imageError && (
-                    <div className="mb-4 md:mb-0 flex items-center justify-center bg-gray-200 rounded-lg shadow-md w-[100px] h-[140px]">
-                        <span className="text-xs text-gray-600 text-center p-2">{card.name}</span>
-                    </div>
-                )}
+                {/* Card image*/}
+                {card?.image_uris && CardImage}
             </div>
 
             <div className="mt-4 grid grid-cols-2 gap-4 md:grid-cols-4">
@@ -525,7 +571,7 @@ export default function PriceChart({
                             >
                                 {/* Draw a line for each finish */}
                                 {finishesToShow.map(finish => {
-                                    const finishData = processedHistory[finish] || [];
+                                    const finishData = filteredHistory[finish] || [];
                                     if (finishData.length === 0) return null;
                                     
                                     // filter for valid data points (removing infinite values/anything non-numeric)
@@ -540,7 +586,8 @@ export default function PriceChart({
                                     
                                     // Start the path
                                     validDataPoints.forEach((point, index) => {
-                                        const x = (index / (validDataPoints.length - 1)) * chartDimensions.width;
+                                        // Replace the current x-coordinate calculation with:
+                                        const x = ((point.date.getTime() - minDate.getTime()) / timeRangeDuration) * chartDimensions.width;
                                         
                                         // Calculate y value with safety checks
                                         let y;
@@ -577,12 +624,7 @@ export default function PriceChart({
 
                                             {/* Data points */}
                                             {validDataPoints.map((point, index) => {
-                                                let x;
-                                                if (validDataPoints.length <= 1) {
-                                                    x = chartDimensions.width / 2; // center it if we only have 1 point
-                                                } else {
-                                                    x = (index / (validDataPoints.length - 1)) * chartDimensions.width;
-                                                }
+                                                const x = ((point.date.getTime() - minDate.getTime()) / timeRangeDuration) * chartDimensions.width;
 
                                                 let y;
                                                 if (priceRange <= 0) {
@@ -652,7 +694,7 @@ export default function PriceChart({
                             <div className="flex justify-between text-xs text-gray-500 mt-2">
                                 {allDates.map((date, index) => {
                                     // Calculate proper position based on chart width
-                                    const position = (index / (allDates.length - 1)) * 100;
+                                    const position = ((date.getTime() - minDate.getTime()) / timeRangeDuration) * chartDimensions.width;
                                     
                                     // Show all labels if we have 10 or fewer, otherwise space them out
                                     const showLabel = allDates.length <= 10 || 
@@ -667,7 +709,7 @@ export default function PriceChart({
                                             key={index} 
                                             style={{ 
                                                 position: 'absolute', 
-                                                left: `${(index / (allDates.length - 1)) * chartDimensions.width}px`, 
+                                                left: `${position}px`, 
                                                 transform: 'translateX(-50%)' 
                                             }}
                                         >

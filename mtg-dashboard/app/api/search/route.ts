@@ -171,10 +171,68 @@ export async function GET(request: NextRequest) {
                 .toArray();
         }
 
+        // For each card, get the latest price data for each finish in the card_prices collection
+        const enhancedCards = await Promise.all(cards.map(async (card) => {
+            // Get the latest price for each finish type
+            const finishTypes = ['nonfoil', 'foil', 'etched'];
+            const latestPrices: any = {};
+            
+            await Promise.all(finishTypes.map(async (finish) => {
+                const latestPriceData = await db.collection(COLLECTIONS.card_prices)
+                    .find({ 
+                        card_key: card.card_key,
+                        finish: finish
+                    })
+                    .sort({ date: -1 }) // Sort by date descending to get the latest
+                    .limit(1)
+                    .toArray();
+                
+                if (latestPriceData.length > 0) {
+                    // Store latest price for this finish
+                    latestPrices[finish] = {
+                        price: latestPriceData[0].price,
+                        date: latestPriceData[0].date
+                    };
+                }
+            }));
+            
+            // Merge the latest prices into the card's prices object
+            const enhancedCard = { ...card };
+            
+            // Initialize prices object if it doesn't exist
+            if (!enhancedCard.prices) {
+                enhancedCard.prices = {};
+            }
+            
+            // Add latest prices from our timeseries collection
+            if (latestPrices.nonfoil) {
+                enhancedCard.latest_prices = {
+                    ...enhancedCard.latest_prices,
+                    nonfoil: latestPrices.nonfoil
+                };
+            }
+            
+            if (latestPrices.foil) {
+                enhancedCard.latest_prices = {
+                    ...enhancedCard.latest_prices,
+                    foil: latestPrices.foil
+                };
+            }
+            
+            if (latestPrices.etched) {
+                enhancedCard.latest_prices = {
+                    ...enhancedCard.latest_prices,
+                    etched: latestPrices.etched
+                };
+            }
+            
+            return enhancedCard;
+        }));
+
     
         // Return search results with pagination info
         return NextResponse.json({
-            cards,
+            cards: enhancedCards,
             pagination: {
                 currentPage: page,
                 totalPages: Math.ceil(totalResults / pageSize),

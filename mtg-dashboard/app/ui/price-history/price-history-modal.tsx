@@ -245,6 +245,7 @@ export default function PriceHistoryModal({
                     card={memoizedCardData.card}
                     priceHistory={memoizedCardData.priceHistory}
                     selectedFinish={finish}
+                    timeRange={parseInt(days)} // parse selected days value
                   />
                 </div>
               ) : (

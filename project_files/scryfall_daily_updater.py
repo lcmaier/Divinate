@@ -42,8 +42,7 @@ class DailyPriceUpdater:
         # Track statistics for the current update
         self.changes_detected = 0
         self.new_sets = []
-        self.ban_changes = []
-        self.restriction_changes = []
+        self.ban_restricted_changes = []
         self.format_changes = []
         self.errata_changes = []
         
@@ -205,9 +204,10 @@ class DailyPriceUpdater:
     
 
     ## DATA EXTRACTION METHODS ##
+    
     def is_format_legal(self, card_data: Dict) -> bool:
         """
-        Check if a card is legal in the specified format.
+        Check if a card is legal in the specified format and not from a digital-only set.
         
         Args:
             card_data: Card data from Scryfall
@@ -216,6 +216,10 @@ class DailyPriceUpdater:
             bool: True if the card is legal in the format, False otherwise
         """
         try:
+            digital = card_data.get('digital', False)
+            if digital:
+                return False
+            
             if self.format_name == 'all':
                 return True
                 
@@ -358,7 +362,7 @@ class DailyPriceUpdater:
                     "card_key": base_card_key,
                     "date": today_datetime,
                     "price": foil_price,
-                    "finish": "foil",
+                    "finish": "etched",
                     "source": "scryfall",
                     # Metadata for future reconciliation with MTGGoldfish
                     "metadata": {
@@ -426,13 +430,19 @@ class DailyPriceUpdater:
             set_name = new_doc.get('set_name', '')
             card_name = new_doc.get('name', 'Unknown Card')
             
-            # Check if this is the first card from this set
-            existing_count = self.db[MONGO_COLLECTIONS["cards"]].count_documents({"set": set_code})
-            if existing_count == 0:
-                logger.info(f"NEW SET: {set_name} ({set_code}) - First card: {card_name}")
-            else:
-                logger.debug(f"New card added: {card_name} ({set_code})")
-            return
+            # Check if this is the first card from this set, and that it is actually a paper set
+            if set_code not in DIGITAL_ONLY_SET_CODES:
+                existing_count = self.db[MONGO_COLLECTIONS["cards"]].count_documents({"set": set_code})
+                if existing_count == 0:
+                    self.changelog_logger.info(f"NEW SET: {set_name} ({set_code}) - First card: {card_name}")
+                    self.new_sets.append({
+                        'set': set_name,
+                        'code': set_code
+                    })
+                    self.changes_detected += 1
+                else:
+                    self.changelog_logger.info(f"New card added: {card_name} ({set_code})")
+                return
         
         card_name = new_doc.get('name', 'Unknown Card')
         
@@ -459,10 +469,24 @@ class DailyPriceUpdater:
                     changes.append(f"Added to {format_name} as {new_status}")
                 else:
                     changes.append(f"Status in {format_name} changed: {old_status} → {new_status}")
+                
+                self.ban_restricted_changes.append({
+                        'card': card_name,
+                        'old_status': old_status,
+                        'new_status': new_status,
+                        'format': format_name
+                    })
         
         # Track oracle text changes (potential errata)
-        if old_doc.get('oracle_text') != new_doc.get('oracle_text'):
+        old_text = old_doc.get('oracle_text')
+        new_text = new_doc.get('oracle_text')
+        if old_text != new_text:
             changes.append("Oracle text updated (errata)")
+            self.errata_changes.append({
+                'card': card_name,
+                'old_text': old_text,
+                'new_text': new_text
+            })
         
         # Track type line changes
         if old_doc.get('type_line') != new_doc.get('type_line'):
@@ -494,17 +518,16 @@ class DailyPriceUpdater:
             self.changelog_logger.info("\nNEW SETS:")
             for set_info in self.new_sets:
                 self.changelog_logger.info(f"- {set_info['set']} ({set_info['code']})")
+            # clear list after printing to changelog
+            self.new_sets.clear()
         
         # Log bans and restrictions
-        if self.ban_changes:
-            self.changelog_logger.info("\nBAN CHANGES:")
-            for ban in self.ban_changes:
+        if self.ban_restricted_changes:
+            self.changelog_logger.info("\nBAN/RESTRICTED CHANGES:")
+            for ban in self.ban_restricted_changes:
                 self.changelog_logger.info(f"- {ban['card']}: {ban['old_status']} → {ban['new_status']} in {ban['format']}")
-        
-        if self.restriction_changes:
-            self.changelog_logger.info("\nRESTRICTION CHANGES:")
-            for restriction in self.restriction_changes:
-                self.changelog_logger.info(f"- {restriction['card']}: {restriction['old_status']} → {restriction['new_status']} in {restriction['format']}")
+            # clear list after printing to changelog
+            self.ban_restricted_changes.clear()
         
         # Log errata
         if self.errata_changes:
@@ -513,6 +536,8 @@ class DailyPriceUpdater:
                 self.changelog_logger.info(f"- {errata['card']}:")
                 self.changelog_logger.info(f"  OLD: {errata['old_text']}")
                 self.changelog_logger.info(f"  NEW: {errata['new_text']}")
+            
+            self.errata_changes.clear()
         
         self.changelog_logger.info("\n" + "=" * 80)
         self.changelog_logger.info(f"Update completed at {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
@@ -572,6 +597,11 @@ class DailyPriceUpdater:
                         
                         # creating the card document
                         card_document = self.create_card_data_document(card_data)
+
+                        # check if document is for a digital card, if so we skip it
+                        if card_document['digital']:
+                            continue
+
                         card_key = card_document['card_key']
 
                         # Look up existing card for change tracking

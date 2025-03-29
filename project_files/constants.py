@@ -40,142 +40,43 @@ MONGO_COLLECTIONS = {
     "card_prices": "card_prices" # time series collection
 }
 
-MAR1225_MISSING_SETS = [
-    # ('pss4', 'MKM Standard Showdown'), # no price info even on Scryfall
-    # ('pmkm', 'Murders at Karlov Manor Promos'), # no MTGG price data
-    # ('pl24', 'Year of the Dragon 2024'), # no MTGG price data
-    # ('pw24', 'Wizards Play Network 2024'), # no MTGG price data
-    # ('plci', 'The Lost Caverns of Ixalan Promos'), # no MTGG price data
-    # ('pmat', 'March of the Machine: The Aftermath Promos'), # no MTGG price data
-    # ('pwoe', 'Wilds of Eldraine Promos'), # no MTGG price data
-    # ('pmda', 'Magic Duel Masters Promos'), # no MTGG price data
-    # ('p30t', '30th Anniversary Celebration Tokyo'), # no MTGG price data
-    # ('pmom', 'March of the Machine Promos'), # no MTGG price data
-    # ('slp', 'Secret Lair Showdown'), # no MTGG price data
-    # ('pw23', 'Wizards Play Network 2023'), # no MTGG price data
-    # ('p23', 'Judge Gift Cards 2023'), # no MTGG price data
-    # ('pbro', "The Brothers' War Promos"), # no MTGG price data
-    # ('p30h', '30th Anniversary History Promos'), # no MTGG price data
-    # ('pdmu', 'Dominaria United Promos'), # no MTGG price data
-    # ('p30a', '30th Anniversary Play Promos'), # no MTGG price data
-    # ('sch', 'Store Championships'), # no MTGG price data
-    # ('pclb', "Battle for Baldur's Gate Promos"), # no MTGG price data
-    # ('pncc', 'New Capenna Commander Promos'), # no MTGG price data
-    # ('psnc', 'Streets of New Capenna Promos'), # no MTGG price data
-    # ('pw22', 'Wizards Play Network 2022'), # no MTGG price data
-    # ('p22', 'Judge Gift Cards 2022'), # no MTGG price data
-    # ('pvow', 'Innistrad: Crimson Vow Promos'), # no MTGG price data
-    # ('q06', 'Pioneer Challenger Decks 2021'), # no MTGG price data
-    # ('plg21', 'Love Your LGS 2021'), # no MTGG price data
-    # ('pw21', 'Wizards Play Network 2021'), # no MTGG price data
-    # ('pkhm', 'Kaldheim Promos'), # no MTGG price data
-    # ('pznr', 'Zendikar Rising Promos'), # no MTGG price data
-    # ('pm21', 'Core Set 2021 Promos'), # no MTGG price data 
-    # ('piko', 'Ikoria: Lair of Behemoths Promos'), # no MTGG price data
-    # ('pwcs', 'Planeswalker Championship Promos'), # no MTGG price data
-    # ('pm20', 'Core Set 2020 Promos'), # no MTGG price data
-    # ('ppp1', 'M20 Promo Packs'), # no MTGG price data
-    # ('pwar', 'War of the Spark Promos'), # no MTGG price data
-    # ('j19', 'Judge Gift Cards 2019'), # no MTGG price data
-    # ('prw2', 'RNA Ravnica Weekend'), # no MTGG price data
-    # ('prna', 'Ravnica Allegiance Promos'), # no MTGG price data
-    # ('pm19', 'Core Set 2019 Promos'), # no MTGG price data
-    # ('pss3', 'M19 Standard Showdown'), # no MTGG price data
-    # ('pdom', 'Dominaria Promos'), # no MTGG price data
-    # ('prix', 'Rivals of Ixalan Promos'), # no MTGG price data
-    # ('pxtc', 'XLN Treasure Chest'), # no MTGG price data
-    # ('g17', '2017 Gift Pack'), # no MTGG price data
-    # ('pxln', 'Ixalan Promos'), # no MTGG price data
-    # ('pss2', 'XLN Standard Showdown'), # no MTGG price data
-    # ('phou', 'Hour of Devastation Promos'), # no MTGG price data
-    # ('pakh', 'Amonkhet Promos'), # no MTGG price data
-    # ('pkld', 'Kaladesh Promos'), # no MTGG price data
-    # ('pemn', 'Eldritch Moon Promos'), # no MTGG price data
-    # ('pogw', 'Oath of the Gatewatch Promos'), # no MTGG price data
-    # ('pz1', 'Legendary Cube Prize Pack'), # no MTGG price data
-    # ('pbfz', 'Battle for Zendikar Promos'), # no MTGG price data
-    # ('cp3', 'Magic Origins Clash Pack'), # no MTGG price data
-    # ('pori', 'Magic Origins Promos'), # no MTGG price data
-    # ('ptkdf', 'Tarkir Dragonfury'), # no MTGG price data
-    # ('pdtk', 'Dragons of Tarkir Promos'), # no MTGG price data
-    # ('pfrf', 'Fate Reforged Promos'), # no MTGG price data
-    # ('cp2', 'Fate Reforged Clash Pack'), # no MTGG price data
-    # ('f15', 'Friday Night Magic 2015'), # no MTGG price data
-    # ('m15', 'Magic 2015'), # no MTGG price data
-    ('ori', 'Magic Origins'),
-    # ('cp1', 'Magic 2015 Clash Pack'), # no MTGG price data
-    # ('pm15', 'Magic 2015 Promos'), # no MTGG price data
-    # ('pjou', 'Journey into Nyx Promos'), # no MTGG price data
-    # ('f14', 'Friday Night Magic 2014'), # no MTGG price data
-    # ('j14', 'Judge Gift Cards 2014'), # no MTGG price data
-    # ('c13', 'Commander 2013'), # no MTGG price data
-    ('m14', 'Magic 2014'), 
-    # ('psdc', 'San Diego Comic-Con 2013'), # no MTGG price data
-    # ('pdgm', "Dragon's Maze Promos"), # no MTGG price data
-    # ('pgtc', 'Gatecrash Promos'), # no MTGG price data
-    # ('pdp14', 'Duels of the Planeswalkers 2014 Promos '), # no MTGG price data
-    # ('prtr', 'Return to Ravnica Promos'), # no MTGG price data
-    ('pc2', 'Planechase 2012'), 
-    # ('pidw', 'IDW Comics Inserts'), # no MTGG price data
-    # ('f12', 'Friday Night Magic 2012'), # no MTGG price data
-    # ('pisd', 'Innistrad Promos'), # no MTGG price data
-    ('cmd', 'Commander 2011'), 
-    ('td2', 'Duel Decks: Mirrodin Pure vs. New Phyrexia'), 
-    # ('pmps11', 'Magic Premiere Shop 2011'), # no MTGG price data
-    # ('ps11', 'Salvat 2011'), # no MTGG price data
-    # ('g11', 'Judge Gift Cards 2011'), # no MTGG price data
-    # ('f11', 'Friday Night Magic 2011'), # no MTGG price data
-    # ('p11', 'Magic Player Rewards 2011'), # no MTGG price data
-    # ('psom', 'Scars of Mirrodin Promos'), # no MTGG price data
-    # ('pmps10', 'Magic Premiere Shop 2010'), # no MTGG price data
-    # ('f10', 'Friday Night Magic 2010'), # no MTGG price data
-    # ('p10', 'Magic Player Rewards 2010'), # no MTGG price data
-    # ('pzen', 'Zendikar Promos'), # no MTGG price data
-    # ('pmps09', 'Magic Premiere Shop 2009'), # no MTGG price data
-    # ('p09', 'Magic Player Rewards 2009'), # no MTGG price data
-    # ('pmps08', 'Magic Premiere Shop 2008'), # no MTGG price data
-    # ('p08', 'Magic Player Rewards 2008'), # no MTGG price data
-    # ('pmps07', 'Magic Premiere Shop 2007'), # no MTGG price data
-    # ('p07', 'Magic Player Rewards 2007'), # no MTGG price data
-    ('tsb', 'Time Spiral Timeshifted'), 
-    ('cst', 'Coldsnap Theme Decks'), 
-    # ('pcmp', 'Champs and States'), # no MTGG price data
-    # ('pmps06', 'Magic Premiere Shop 2006'), # no MTGG price data
-    # ('pal06', 'Arena League 2006'), # no MTGG price data
-    # ('dci', 'DCI Promos'), # no MTGG price data
-    # ('p06', 'Magic Player Rewards 2006'), # no MTGG price data
-    # ('phuk', 'Hachette UK'), # no MTGG price data
-    # ('pmps', 'Magic Premiere Shop 2005'), # no MTGG price data
-    # ('psal', 'Salvat 2005'), # no MTGG price data
-    # ('p9ed', 'Ninth Edition Promos'), # no MTGG price data
-    # ('pal05', 'Arena League 2005'), # no MTGG price data
-    # ('f05', 'Friday Night Magic 2005'), # no MTGG price data
-    # ('pal04', 'Arena League 2004'), # no MTGG price data
-    # ('pjjt', 'Japan Junior Tournament'), # no MTGG price data
-    # ('pal03', 'Arena League 2003'), # no MTGG price data
-    # ('f03', 'Friday Night Magic 2003'), # no MTGG price data
-    # ('pal02', 'Arena League 2002'), # no MTGG price data
-    # ('pal01', 'Arena League 2001'), # no MTGG price data
-    # ('g01', 'Judge Gift Cards 2001'), # no MTGG price data
-    # ('f01', 'Friday Night Magic 2001'), # no MTGG price data
-    # ('pelp', 'European Land Program'), # no MTGG price data
-    # ('pal00', 'Arena League 2000'), # no MTGG price data
-    # ('fnm', 'Friday Night Magic 2000'), # no MTGG price data
-    # ('psus', 'Junior Super Series'), # no MTGG price data
-    # ('pwos', 'Wizards of the Coast Online Store'), # no MTGG price data
-    # ('pgru', 'Guru'), # no MTGG price data
-    # ('pal99', 'Arena League 1999'), # no MTGG price data
-    # ('palp', 'Asia Pacific Land Program'), # no MTGG price data
-    ('itp', 'Introductory Two-Player Set'), 
-    ('parl', 'Arena League 1996'), 
-    ('rqs', 'Rivals Quick Start Set'), 
-    ('rin', 'Rinascimento'), 
-    ('ren', 'Renaissance'),  
-    ('pmei', 'Media and Collaboration Promos'), 
-    ('sum', 'Summer Magic / Edgar'), 
-    ('2ed', 'Unlimited Edition'), 
-    ('leb', 'Limited Edition Beta'), 
-    ('lea', 'Limited Edition Alpha')
+DIGITAL_ONLY_SET_CODES = [
+    'ajmp',
+    'akr',
+    'ana',
+    'anb',
+    'ea1',
+    'ea2',
+    'ea3',
+    'ha1',
+    'ha2',
+    'ha3',
+    'ha4',
+    'ha5',
+    'ha6',
+    'ha7',
+    'j21',
+    'klr',
+    'me1',
+    'me2',
+    'me3',
+    'me4',
+    'oana',
+    'pana',
+    'past',
+    'pio',
+    'pmoa',
+    'prm',
+    'psdg',
+    'pz1',
+    'pz2',
+    'sir',
+    'sis',
+    'td0',
+    'td2',
+    'tpr',
+    'vma',
+    'xana'
 ]
 
 
@@ -187,7 +88,6 @@ SETS = [
     ('pjsc', 'Japan Standard Cup'),
     ('inr', 'Innistrad Remastered'),
     ('pspl', 'Spotlight Series'),
-    ('pio', 'Pioneer Masters'),
     ('pfdn', 'Foundations Promos'),
     ('fdn', 'Foundations'),
     ('j25', 'Foundations Jumpstart'),
@@ -231,7 +131,6 @@ SETS = [
     ('woe', 'Wilds of Eldraine'),
     ('p30t', '30th Anniversary Celebration Tokyo'),
     ('cmm', 'Commander Masters'),
-    ('ha7', 'Historic Anthology 7'),
     ('ltc', 'Tales of Middle-earth Commander'),
     ('ltr', 'The Lord of the Rings: Tales of Middle-earth'),
     ('mat', 'March of the Machine: The Aftermath'),
@@ -239,8 +138,6 @@ SETS = [
     ('mul', 'Multiverse Legends'),
     ('mom', 'March of the Machine'),
     ('moc', 'March of the Machine Commander'),
-    ('sis', 'Shadows of the Past'),
-    ('sir', 'Shadows over Innistrad Remastered'),
     ('slp', 'Secret Lair Showdown'),
     ('pl23', 'Year of the Rabbit 2023'),
     ('pone', 'Phyrexia: All Will Be One Promos'),
@@ -249,7 +146,6 @@ SETS = [
     ('dmr', 'Dominaria Remastered'),
     ('pw23', 'Wizards Play Network 2023'),
     ('p23', 'Judge Gift Cards 2023'),
-    ('ea2', 'Explorer Anthology 2'),
     ('scd', 'Starter Commander Decks'),
     ('j22', 'Jumpstart 2022'),
     ('brc', "The Brothers' War Commander"),
@@ -267,7 +163,6 @@ SETS = [
     ('p30a', '30th Anniversary Play Promos'),
     ('sch', 'Store Championships'),
     ('2x2', 'Double Masters 2022'),
-    ('hbg', "Alchemy Horizons: Baldur's Gate"),
     ('pclb', "Battle for Baldur's Gate Promos"),
     ('clb', "Commander Legends: Battle for Baldur's Gate"),
     ('pncc', 'New Capenna Commander Promos'),
@@ -287,7 +182,6 @@ SETS = [
     ('q06', 'Pioneer Challenger Decks 2021'),
     ('mic', 'Midnight Hunt Commander'),
     ('mid', 'Innistrad: Midnight Hunt'),
-    ('j21', 'Jumpstart: Historic Horizons'),
     ('afc', 'Forgotten Realms Commander'),
     ('afr', 'Adventures in the Forgotten Realms'),
     ('plg21', 'Love Your LGS 2021'),
@@ -297,36 +191,28 @@ SETS = [
     ('stx', 'Strixhaven: School of Mages'),
     ('sta', 'Strixhaven Mystical Archive'),
     ('tsr', 'Time Spiral Remastered'),
-    ('ha4', 'Historic Anthology 4'),
     ('pkhm', 'Kaldheim Promos'),
     ('khc', 'Kaldheim Commander'),
     ('khm', 'Kaldheim'),
     ('cmr', 'Commander Legends'),
-    ('klr', 'Kaladesh Remastered'),
     ('plst', 'The List'),
     ('pznr', 'Zendikar Rising Promos'),
     ('znr', 'Zendikar Rising'),
     ('zne', 'Zendikar Rising Expeditions'),
     ('znc', 'Zendikar Rising Commander'),
-    ('anb', 'Arena Beginner Set'),
-    ('akr', 'Amonkhet Remastered'),
     ('2xm', 'Double Masters'),
-    ('ajmp', 'Jumpstart Arena Exclusives'),
     ('jmp', 'Jumpstart'),
     ('pm21', 'Core Set 2021 Promos'),
     ('m21', 'Core Set 2021'),
     ('slu', 'Secret Lair: Ultimate Edition'),
-    ('ha3', 'Historic Anthology 3'),
     ('piko', 'Ikoria: Lair of Behemoths Promos'),
     ('iko', 'Ikoria: Lair of Behemoths'),
     ('c20', 'Commander 2020'),
-    ('ha2', 'Historic Anthology 2'),
     ('und', 'Unsanctioned'),
     ('pthb', 'Theros Beyond Death Promos'),
     ('thb', 'Theros Beyond Death'),
     ('pf20', 'MagicFest 2020'),
     ('sld', 'Secret Lair Drop'),
-    ('ha1', 'Historic Anthology 1'),
     ('gn2', 'Game Night 2019'),
     ('peld', 'Throne of Eldraine Promos'),
     ('eld', 'Throne of Eldraine'),
@@ -353,9 +239,6 @@ SETS = [
     ('pgrn', 'Guilds of Ravnica Promos'),
     ('grn', 'Guilds of Ravnica'),
     ('c18', 'Commander 2018'),
-    ('ana', 'Arena New Player Experience'),
-    ('pana', 'MTG Arena Promos'),
-    ('oana', 'Arena New Player Experience Cards'),
     ('pm19', 'Core Set 2019 Promos'),
     ('pss3', 'M19 Standard Showdown'),
     ('m19', 'Core Set 2019'),
@@ -391,7 +274,6 @@ SETS = [
     ('mm3', 'Modern Masters 2017'),
     ('aer', 'Aether Revolt'),
     ('pca', 'Planechase Anthology'),
-    ('pz2', 'Treasure Chest'),
     ('c16', 'Commander 2016'),
     ('pkld', 'Kaladesh Promos'),
     ('kld', 'Kaladesh'),
@@ -406,7 +288,6 @@ SETS = [
     ('ddq', 'Duel Decks: Blessed vs. Cursed'),
     ('ogw', 'Oath of the Gatewatch'),
     ('pogw', 'Oath of the Gatewatch Promos'),
-    ('pz1', 'Legendary Cube Prize Pack'),
     ('c15', 'Commander 2015'),
     ('bfz', 'Battle for Zendikar'),
     ('pbfz', 'Battle for Zendikar Promos'),
@@ -416,7 +297,6 @@ SETS = [
     ('pori', 'Magic Origins Promos'),
     ('ori', 'Magic Origins'),
     ('mm2', 'Modern Masters 2015'),
-    ('tpr', 'Tempest Remastered'),
     ('ptkdf', 'Tarkir Dragonfury'),
     ('pdtk', 'Dragons of Tarkir Promos'),
     ('dtk', 'Dragons of Tarkir'),
@@ -473,18 +353,15 @@ SETS = [
     ('v11', 'From the Vault: Legends'),
     ('m12', 'Magic 2012'),
     ('cmd', 'Commander 2011'),
-    ('td2', 'Duel Decks: Mirrodin Pure vs. New Phyrexia'),
     ('nph', 'New Phyrexia'),
     ('ddg', 'Duel Decks: Knights vs. Dragons'),
     ('mbs', 'Mirrodin Besieged'),
-    ('me4', 'Masters Edition IV'),
     ('pmps11', 'Magic Premiere Shop 2011'),
     ('ps11', 'Salvat 2011'),
     ('g11', 'Judge Gift Cards 2011'),
     ('f11', 'Friday Night Magic 2011'),
     ('p11', 'Magic Player Rewards 2011'),
     ('pd2', 'Premium Deck Series: Fire and Lightning'),
-    ('td0', 'Magic Online Theme Decks'),
     ('som', 'Scars of Mirrodin'),
     ('psom', 'Scars of Mirrodin Promos'),
     ('ddf', 'Duel Decks: Elspeth vs. Tezzeret'),
@@ -501,7 +378,6 @@ SETS = [
     ('ddd', 'Duel Decks: Garruk vs. Liliana'),
     ('pzen', 'Zendikar Promos'),
     ('zen', 'Zendikar'),
-    ('me3', 'Masters Edition III'),
     ('hop', 'Planechase'),
     ('m10', 'Magic 2010'),
     ('arb', 'Alara Reborn'),
@@ -511,7 +387,6 @@ SETS = [
     ('p09', 'Magic Player Rewards 2009'),
     ('dd2', 'Duel Decks: Jace vs. Chandra'),
     ('ala', 'Shards of Alara'),
-    ('me2', 'Masters Edition II'),
     ('drb', 'From the Vault: Dragons'),
     ('shm', 'Shadowmoor'),
     ('mor', 'Morningtide'),
@@ -519,7 +394,6 @@ SETS = [
     ('p08', 'Magic Player Rewards 2008'),
     ('dd1', 'Duel Decks: Elves vs. Goblins'),
     ('lrw', 'Lorwyn'),
-    ('me1', 'Masters Edition'),
     ('10e', 'Tenth Edition'),
     ('fut', 'Future Sight'),
     ('pgpx', 'Grand Prix Promos'),
@@ -557,7 +431,6 @@ SETS = [
     ('pal03', 'Arena League 2003'),
     ('f03', 'Friday Night Magic 2003'),
     ('ons', 'Onslaught'),
-    ('prm', 'Magic Online Promos'),
     ('pal02', 'Arena League 2002'),
     ('dkm', 'Deckmasters'),
     ('ody', 'Odyssey'),

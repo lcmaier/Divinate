@@ -26,3 +26,4 @@ export const CARD_FINISHES = [
 export type CardFormat = typeof CARD_FORMATS[number];
 export type CardRarity = typeof CARD_RARITIES[number];
 export type CardFinish = typeof CARD_FINISHES[number];
+export type FinishType = 'all' | CardFinish;
