@@ -3,7 +3,8 @@
 
 import { TrendingUp, TrendingDown } from 'lucide-react';
 import { useState, useMemo } from 'react';
-import { CartesianGrid, Line, LineChart, XAxis, YAxis } from 'recharts';
+import { LineChart } from '@/app/ui/core/line-chart';
+import { colorlessPalette, ColorPalette } from "@/app/lib/color-identities";
 
 import {
     Card,
@@ -12,32 +13,36 @@ import {
     CardFooter,
     CardHeader,
     CardTitle,
-  } from "@/components/ui/card";
-  import {
-    ChartConfig,
-    ChartContainer,
-    ChartTooltip,
-    ChartTooltipContent,
-  } from "@/components/ui/chart";
+} from "@/components/ui/card";
 
-  const priceChartConfig = {
-    nonfoil: {
-        label: "Regular",
-        color: "hsl(221, 83%, 53%)", // Blue
-    },
-    foil: {
-        label: "Foil",
-        color: "hsl(142, 71%, 45%)", // Green
-    },
-    etched: {
-        label: "Etched",
-        color: "hsl(262, 80%, 50%)", // Purple
-    },
-  } satisfies ChartConfig;
+// Define a type for the finish color configuration
+interface FinishColorConfig {
+    label: string;
+    color: string;
+  }
+  
+  // Type for the complete chart colors mapping
+  interface ChartColorMap {
+    nonfoil: FinishColorConfig;
+    foil: FinishColorConfig;
+    etched: FinishColorConfig;
+    [key: string]: FinishColorConfig; // Allow for other finish types
+  }
 
-  // custom tooltip content for chart
-  const CustomTooltipContent = ({ active, payload, label, formatter }: any) => {
-    if (!active || !payload || payload.length === 0) { return null; }
+// Custom tooltip content for price chart
+const CustomTooltipContent = ({ 
+    active, 
+    payload, 
+    label, 
+    formatter,
+    colorMap }: {
+        active?: boolean;
+        payload?: any[];
+        label?: string;
+        formatter?: (value: number) => string;
+        colorMap: ChartColorMap;
+    }) => {
+    if (!active || !payload || payload.length === 0 || !label ) { return null; }
 
     // Tooltip needs its own date formatting
     const formattedDate = formatDate(label);
@@ -50,7 +55,7 @@ import {
                     if (entry.value === null || entry.value === undefined) { return null; }
 
                     const finish = entry.dataKey;
-                    const config = priceChartConfig[finish as keyof typeof priceChartConfig];
+                    const config = colorMap[finish as keyof typeof colorMap];
 
                     return (
                         <div key={`item-${index}`} className="flex items-center justify-between gap-4">
@@ -70,25 +75,31 @@ import {
             </div>
         </div>
     );
-  };
-  
-  // Format date as MMM D (e.g., "Jan 1")
-  const formatDate = (dateStr: string) => {
+};
+
+// Format date as MMM D (e.g., "Jan 1")
+const formatDate = (dateStr: string) => {
     const [year, month, day] = dateStr.split('-').map(Number);
     const date = new Date(year, month - 1, day);
     return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-  }
+}
 
-    // Legend component to show available finishes with toggle functionality
-  const Legend = ({ finishes, activeFinishes, toggleFinish }: {
+// Legend component to show available finishes with toggle functionality
+const Legend = ({ 
+    finishes, 
+    activeFinishes, 
+    toggleFinish, 
+    colorMap 
+}: {
     finishes: string[],
     activeFinishes: string[],
-    toggleFinish: (finish: string) => void
-  }) => (
+    toggleFinish: (finish: string) => void,
+    colorMap: ChartColorMap,
+}) => (
     <div className="flex gap-3 pb-3">
         {finishes.map((finish) => {
             const isActive = activeFinishes.includes(finish);
-            const config = priceChartConfig[finish as keyof typeof priceChartConfig];
+            const config = colorMap[finish as keyof typeof colorMap];
 
             // Return a pill button for each finish type that can be toggled on/off
             return (
@@ -109,9 +120,9 @@ import {
             );
         })}
     </div>
-  );
+);
 
-  interface PriceChartProps {
+interface PriceChartProps {
     data: Array<{
         date: string;
         [finish: string]: any; // Allow for price values by finish type
@@ -119,18 +130,19 @@ import {
     finishesToShow: string[] // Array of finish types to show
     title: string
     subtitle?: string,
-    height?: number // Optional height for the chart container
-  }
+    height?: number, // Optional height for the chart container
+    colorPalette?: ColorPalette,
+}
 
-  export function PriceHistoryChart({
+export function PriceHistoryChart({
     data, // Required parameter for price history data
     finishesToShow = ['nonfoil', 'foil', 'etched'], // Default to show all finishes
     title = "Price History",
     subtitle = "Latest prices for each finish",
-    height = 300 // Default height for the chart container
-  }: PriceChartProps) {
+    height = 300, // Default height for the chart container
+    colorPalette
+}: PriceChartProps) {
     // Stateful logic to manage which finishes are active
-    // stateful legend component to toggle finishes
     const [activeFinishes, setActiveFinishes] = useState<string[]>(finishesToShow);
 
     // Toggle function to show/hide specific finish data
@@ -146,13 +158,31 @@ import {
             return [...prev, finish];
         });
     };
+
+    // set palette
+    const palette = colorPalette || colorlessPalette;
+    // Create finish-specific colors based on card's palette
+    const chartColors: ChartColorMap = {
+        nonfoil: {
+            label: "Regular",
+            color: palette.primary,
+        },
+        foil: {
+            label: "Foil",
+            color: palette.secondary,
+        },
+        etched: {
+            label: "Etched",
+            color: palette.dark,
+        },
+    };
     
     // Filter config to only show selected finishes
     const filteredConfig = useMemo(() => {
-        return Object.entries(priceChartConfig)
+        return Object.entries(chartColors)
         .filter(([finish]) => finishesToShow.includes(finish))
-        .reduce((acc, [finish, config]) => ({ ...acc, [finish]: config }), {}) as ChartConfig;
-    }, [finishesToShow]);
+        .reduce((acc, [finish, config]) => ({ ...acc, [finish]: config }), {});
+    }, [finishesToShow, chartColors]);
 
     const calculateTrends = (data: any[], finishes: string[]) => {
         return finishes.map((finish) => {
@@ -169,6 +199,8 @@ import {
     };
     
     const priceTrends = useMemo(() => calculateTrends(data, finishesToShow), [data, finishesToShow]);
+
+    const chartBackgroundClass = `chart-bg-${palette.primary.replace('#', '')}`;
     
     // handle empty input data case
     if (!data || data.length === 0) {
@@ -196,88 +228,33 @@ import {
                     finishes={finishesToShow}
                     activeFinishes={activeFinishes}
                     toggleFinish={toggleFinish}
+                    colorMap={chartColors}
                 /> 
-                <ChartContainer config={filteredConfig}>
-                    <LineChart
-                        accessibilityLayer
-                        data={data}
-                        margin={{
-                            top: 20,
-                            right: 30,
-                            left: 20,
-                            bottom: 5,
-                        }}
-                    >
-                        <CartesianGrid vertical={false} strokeDasharray="3 3" />
-                        <XAxis
-                            dataKey="date"
-                            tickLine={false}
-                            axisLine={false}
-                            tickMargin={8}
-                            tickFormatter={formatDate}
+                {/* Core Line Chart Component */}
+                <LineChart
+                    data={data}
+                    dataKeys={finishesToShow}
+                    xAxisKey="date"
+                    config={filteredConfig}
+                    activeKeys={activeFinishes}
+                    xAxisFormatter={formatDate}
+                    yAxisFormatter={(value) => `$${value}`}
+                    tooltipContent={
+                        <CustomTooltipContent
+                            formatter={(value: number) => `$${Number(value).toFixed(2)}`}
+                            colorMap={chartColors}
                         />
-                        <YAxis
-                            tickFormatter={(value) => `$${value}`}
-                            tickLine={false}
-                            axisLine={false}
-                            tickMargin={8}
-                            width={45}
-                            domain={['auto', 'auto']}
-                            padding={{ top: 10, bottom: 10 }} // Add padding to avoid cutting off labels
-                        />
-                        <ChartTooltip
-                            cursor={false}
-                            content={<CustomTooltipContent
-                                formatter={(value: number) => `$${Number(value).toFixed(2)}`} // Format the price value
-                            />} // Use the memoized tooltip content
-                            //isAnimationActive={false} // Disable animation for performance
-                        />
-
-
-                        {/* Render lines for each selected finish */}
-                        {finishesToShow.map((finish) => {
-                            // skip if finish is not active or no data
-                            if (!activeFinishes.includes(finish) || !data.some(item => item[finish] !== null && item[finish] !== undefined)) {
-                                return null;
-                            }
-
-                            return (
-                                <Line
-                                    key={finish}
-                                    dataKey={finish}
-                                    type="monotone"
-                                    stroke={`var(--color-${finish})`}
-                                    strokeWidth={2}
-                                    connectNulls={true} // Connect lines even if there are null values
-                                    // animation properties
-                                    isAnimationActive={true}
-                                    animationDuration={300}
-                                    dot={((props) => {
-                                        // handle types safely
-                                        if (!props || !props.payload || props.payload[props.dataKey] === null || props.payload[props.dataKey] === undefined) {
-                                            return <></>;
-                                        }
-                                        return (
-                                            <circle
-                                                cx={props.cx}
-                                                cy={props.cy}
-                                                r={4} // Radius of the dot
-                                                fill={`var(--color-${finish})`} // Use the same color as the line
-                                                stroke="white" // Optional: add a white stroke for better visibility
-                                                strokeWidth={1}
-                                            />
-                                        );
-                                    })}
-                                    activeDot={{
-                                        r: 6,
-                                        stroke: "white",
-                                        strokeWidth: 2,
-                                    }}
-                                />
-                            );
-                        })}
-                    </LineChart>
-                </ChartContainer>
+                    }
+                    connectNulls={true}
+                    isAnimationActive={true}
+                    animationDuration={300}
+                    margin={{
+                        top: 20,
+                        right: 30,
+                        left: 20,
+                        bottom: 5,
+                    }}
+                />
             </CardContent>
             <CardFooter className="flex-col items-start gap-2 text-sm border-t border-gray-100 pt-3 bg-gray-50/50">
                 {priceTrends.map(({ finish, change, percentChange }) => 
@@ -285,8 +262,8 @@ import {
                     <div key={finish} className="flex items-center gap-2 font-medium">
                         { change > 0 ? <TrendingUp className="text-emerald-500" size={16} /> : <TrendingDown className="text-rose-500" size={16} />}
                         <span className="flex gap-1.5">
-                            <span className="font-semibold" style={{ color: priceChartConfig[finish as keyof typeof priceChartConfig].color }}>
-                                {priceChartConfig[finish as keyof typeof priceChartConfig].label}:
+                            <span className="font-semibold" style={{ color: chartColors[finish as keyof typeof chartColors].color }}>
+                                {chartColors[finish as keyof typeof chartColors].label}:
                             </span>
                             <span className={change > 0 ? "text-emerald-600" : "text-rose-600"}>
                                 {change > 0 ? "+" : "-"}${Math.abs(change).toFixed(2)}
@@ -300,6 +277,5 @@ import {
               )}
             </CardFooter>
         </Card>
-    )
-  }
-  
+    );
+}

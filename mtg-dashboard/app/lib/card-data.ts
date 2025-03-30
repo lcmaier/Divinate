@@ -21,15 +21,19 @@ export type CardDetails = {
         large?: string;
         png?: string;
     };
+    color_identity?: string[];
+    power?: string,
+    toughness?: string,
+    loyalty?: string;
     mana_cost?: string;
     type_line?: string;
     oracle_text?: string;
     rarity?: string;
     released_at?: string;
     prices?: {
-      usd?: string;
-      usd_foil?: string;
-      usd_etched?: string;
+      usd?: string | null;
+      usd_foil?: string | null;
+      usd_etched?: string | null;
     };
     // New property to store the latest price data from our timeseries collection
     latest_prices?: {

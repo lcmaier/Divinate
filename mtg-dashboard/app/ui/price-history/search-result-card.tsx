@@ -30,7 +30,7 @@ export default function SearchResultCard({
     const [isLoadingFinishes, setIsLoadingFinishes] = useState(false);
 
     // Card image URL (using Scryfall URLs from the card data)
-    const cardImageUrl = card.image_uris?.small || card.image_uris?.normal || 'https://static.wikia.nocookie.net/mtgsalvation_gamepedia/images/f/f8/Magic_card_back.jpg/revision/latest?cb=20140813141013';
+    const cardImageUrl = card.image_uris?.small || card.image_uris?.normal || "/card_back.jpeg";
 
     // Format date helper
     const formatDate = (dateString: string) => {
