@@ -3,7 +3,7 @@
 
 import { TrendingUp, TrendingDown } from 'lucide-react';
 import { useState, useMemo } from 'react';
-import { CartesianGrid, Line, LineChart, XAxis, YAxis, ResponsiveContainer, Tooltip } from 'recharts';
+import { CartesianGrid, Line, LineChart, XAxis, YAxis } from 'recharts';
 
 import {
     Card,
@@ -44,8 +44,8 @@ import {
 
     return (
         <div className="bg-white/95 backdrop-blur-sm p-3 border border-gray-200 rounded-lg shadow-lg text-sm">
-            <p className="font-semibold mb-1.5">{formattedDate}</p>
-            <div className="space-y-2">
+            <p className="font-semibold mb-2 text-gray-800 border-b pb-1.5">{formattedDate}</p>
+            <div className="space-y-2.5">
                 {payload.map((entry: any, index: number) => {
                     if (entry.value === null || entry.value === undefined) { return null; }
 
@@ -61,7 +61,7 @@ import {
                                 />
                                 <span className="text-gray-700">{config?.label || finish}</span>
                             </div>
-                            <span className="font-medium">
+                            <span className="font-semibold">
                                 {formatter ? formatter(entry.value) : entry.value}
                             </span>
                         </div>
@@ -97,8 +97,8 @@ import {
                     onClick={() => toggleFinish(finish)}
                     className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm transition-all
                         ${isActive
-                            ? 'bg-gray-100 shadow-sm'
-                            : 'bg-white/50 text-gray-400'}`}
+                            ? 'bg-gray-100 shadow-sm border border-gray-200 font-medium hover:bg-gray-200'
+                            : 'bg-white/50 text-gray-400 border border-gray-100 hover:border-gray-300'}`}
                 >
                     <span
                         className={`w-3 h-3 rounded-full transition-opacity ${!isActive ? 'opacity-50' : ''}`}
@@ -173,12 +173,12 @@ import {
     // handle empty input data case
     if (!data || data.length === 0) {
         return (
-            <Card className="max-w-3xl mx-auto">
+            <Card className="max-w-3xl mx-auto border border-gray-200 shadow-sm">
                 <CardHeader className="pb-2">
-                    <CardTitle className="text-lg">{title}</CardTitle>
-                    <CardDescription>{subtitle}</CardDescription>
+                    <CardTitle className="text-lg font-bold text-gray-800">{title}</CardTitle>
+                    <CardDescription className="text-gray-500">{subtitle}</CardDescription>
                 </CardHeader>
-                <CardContent className="flex items-center justify-center h-[220px] text-muted-foreground">
+                <CardContent className="flex flex-col items-center justify-center h-[220px] text-gray-400">
                     No price data available
                 </CardContent>
             </Card>
@@ -186,10 +186,10 @@ import {
     }
     
     return (
-        <Card className="max-w-3xl mx-auto">
-            <CardHeader className="pb-2">
-                <CardTitle className="text-lg">{title}</CardTitle>
-                <CardDescription>{subtitle}</CardDescription>
+        <Card className="max-w-3xl mx-auto bg-white/80 backdrop-blur-sm shadow-md border border-gray-100 overflow-hidden">
+            <CardHeader className="pb-2 border-b border-gray-125">
+                <CardTitle className="text-xl font-bold text-gray-800">{title}</CardTitle>
+                <CardDescription className="text-gray-500">{subtitle}</CardDescription>
             </CardHeader>
             <CardContent className="pt-0">
                 <Legend
@@ -279,15 +279,21 @@ import {
                     </LineChart>
                 </ChartContainer>
             </CardContent>
-            <CardFooter className="flex-col items-start gap-2 text-sm">
+            <CardFooter className="flex-col items-start gap-2 text-sm border-t border-gray-100 pt-3 bg-gray-50/50">
                 {priceTrends.map(({ finish, change, percentChange }) => 
                 change !== null ? (
-                    <div key={finish} className="flex items-center gap-2">
-                        { change > 0 ? <TrendingUp className="text-green-500" size={16} /> : <TrendingDown className="text-red-500" size={16} />}
-                        <span>
-                            {priceChartConfig[finish as keyof typeof priceChartConfig].label}: 
-                            {change > 0 ? "+" : "-"}${change.toFixed(2)} 
-                            ({percentChange.toFixed(1)}%)
+                    <div key={finish} className="flex items-center gap-2 font-medium">
+                        { change > 0 ? <TrendingUp className="text-emerald-500" size={16} /> : <TrendingDown className="text-rose-500" size={16} />}
+                        <span className="flex gap-1.5">
+                            <span className="font-semibold" style={{ color: priceChartConfig[finish as keyof typeof priceChartConfig].color }}>
+                                {priceChartConfig[finish as keyof typeof priceChartConfig].label}:
+                            </span>
+                            <span className={change > 0 ? "text-emerald-600" : "text-rose-600"}>
+                                {change > 0 ? "+" : "-"}${Math.abs(change).toFixed(2)}
+                                <span className="text-gray-500 ml-1.5">
+                                    ({percentChange.toFixed(1)}%)
+                                </span>
+                            </span>
                         </span>
                     </div>
                 ) : null

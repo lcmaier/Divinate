@@ -24,6 +24,15 @@ const gappyData = [
   { date: "2024-01-06", nonfoil: 12.50, foil: 28.50, etched: null },
 ]
 
+// Empty data to test the empty state handling
+const emptyData: Array<{
+  date: string;
+  nonfoil?: number | null;
+  foil?: number | null;
+  etched?: number | null;
+  [key: string]: any;
+}> = [];
+
 export default function ChartTestPage() {
   return (
     <div className="space-y-8 p-8">
@@ -56,6 +65,16 @@ export default function ChartTestPage() {
           finishesToShow={['nonfoil', 'foil', 'etched']}
           title="Goldspan Dragon"
           subtitle="Kaldheim (KHM)"
+        />
+      </div>
+
+      <div className="space-y-2">
+        <h2 className="text-xl">Empty Data</h2>
+        <PriceHistoryChart 
+          data={emptyData}
+          finishesToShow={['nonfoil', 'foil', 'etched']}
+          title="Empty Set"
+          subtitle="No Data Available"
         />
       </div>
     </div>
