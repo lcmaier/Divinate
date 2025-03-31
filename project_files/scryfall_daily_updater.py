@@ -2,8 +2,7 @@
 Daily Scryfall Price Updater
 
 This module handles the daily collection of card prices from Scryfall's
-bulk data API. It's designed to work independently of MTGGoldfish data
-while preserving the possibility of future integration.
+bulk data API.
 """
 from logger import get_logger, get_changelog_logger
 from datetime import datetime
@@ -79,7 +78,7 @@ class DailyPriceUpdater:
     def _get_latest_bulk_data_info(self, data_type: str = "default_cards") -> Optional[Dict]:
         """
         Gets the latest bulk data info from Scryfall API. Since this method queries the
-        web, it shouldn't be called directly--use the run method instead
+        web, it shouldn't be called directly--use the `run` method instead
         
         Args:
             data_type: Type of bulk data (default: "default_cards")

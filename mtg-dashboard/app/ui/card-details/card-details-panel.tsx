@@ -1,17 +1,17 @@
 // app/ui/card-details/card-details-panel.tsx
 'use client';
 
-import { useState } from 'react';
+import { useState } from "react";
 import { PriceHistoryChart } from "@/app/ui/price-history/price-chart-v2";
 import SimpleCardImage from "../card-image/simple-card-image";
 import { CardDetails } from "@/app/lib/card-data";
-import { FinishType } from "@/app/lib/card-constants";
 import { usePriceChartData } from "@/app/hooks/usePriceChartData";
 import { RawPricePoint } from "@/app/lib/price-types";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { beleren } from '@/app/ui/fonts';
 import { formatCurrency } from "@/app/lib/utils";
 import { getPaletteFromColorIdentity, ColorPalette, colorlessPalette } from "@/app/lib/color-identities";
+import FlippableCardImage from "../card-image/flippable-card-image";
 
 interface CardDetailsPanelProps {
     card: CardDetails;
@@ -27,6 +27,53 @@ export function CardDetailsPanel({
         priceData,
         ['nonfoil', 'foil', 'etched'] // get as many finishes as are available
     );
+
+    // State for tracking current face and whether to show back face (double-sided cards only)
+    const [currentFaceIndex, setCurrentFaceIndex] = useState(0);
+    const [showBackFace, setShowBackFace] = useState(false);
+
+    // Handler for flipping the card
+    const handleCardFlip = () => {
+        setShowBackFace(!showBackFace);
+        setCurrentFaceIndex(showBackFace ? 0 : 1); // Toggle the current face index
+    };
+
+    // detection for double-faced
+    const isDoubleFaced = Array.isArray(card.card_faces) && card.card_faces.length === 2;
+
+    const currentFace = isDoubleFaced 
+      ? card.card_faces![currentFaceIndex] 
+      : null;
+
+    // Get the correct image URLs and card data based on whether it's double-faced
+    const cardImageUrls = isDoubleFaced && card.card_faces
+    ? {
+        front: {
+        small: card.card_faces[0].image_uris?.small,
+        normal: card.card_faces[0].image_uris?.normal,
+        large: card.card_faces![0].image_uris?.large,
+        },
+        back: {
+        small: card.card_faces[1].image_uris?.small,
+        normal: card.card_faces[1].image_uris?.normal,
+        large: card.card_faces[1].image_uris?.large,
+        }
+    }
+    : {
+        small: card.image_uris?.small,
+        normal: card.image_uris?.normal,
+        large: card.image_uris?.large,
+    };
+
+    // Get the actual image URLs for display
+    const displayImageUrl = isDoubleFaced
+    ? (currentFaceIndex === 0 ? cardImageUrls.front?.normal : cardImageUrls.back?.normal)
+    : cardImageUrls.normal;
+
+    const displayName = isDoubleFaced ? currentFace!.name : card.name;
+    const displayTypeLine = isDoubleFaced ? currentFace!.type_line : card.type_line;
+    const displayOracleText = isDoubleFaced ? currentFace!.oracle_text : card.oracle_text;
+
 
     // Get image URLs
     const smallImageURL = card.image_uris?.normal;
@@ -147,31 +194,41 @@ export function CardDetailsPanel({
                     {/* Left Column - Card Image and Oracle Text */}
                     <div className="md:col-span-4">
                         <div className="flex flex-col items-center gap-6">
-                            {/* Card Image */}
+
+                            {/* Card Image (with double-sided support) */}
                             <div className="flex justify-center">
-                                {smallImageURL ? (
-                                    <SimpleCardImage
-                                        imageUrl={smallImageURL}
-                                        cardName={card.name}
+                                {isDoubleFaced ? (
+                                    <FlippableCardImage
+                                        frontImageUrl={cardImageUrls.front?.normal || ''}
+                                        backImageUrl={cardImageUrls.back?.normal || ''}
+                                        frontCardName={card.card_faces![0].name}
+                                        backCardName={card.card_faces![1].name}
                                         width={244}
                                         height={340}
+                                        showBackFace={showBackFace}
+                                        onFlip={handleCardFlip}
                                     />
                                 ) : (
-                                    <div 
-                                        className="rounded-lg flex items-center justify-center w-[244px] h-[340px]"
-                                        style={{
-                                            backgroundColor: palette.light,
-                                            borderColor: palette.border,
-                                            borderWidth: '1px'
-                                        }}
-                                    >
-                                        <span style={{ color: palette.muted }}>No image available</span>
-                                    </div>
+                                    smallImageURL ? (
+                                        <SimpleCardImage
+                                            imageUrl={smallImageURL}
+                                            cardName={card.name}
+                                            width={244}
+                                            height={300}
+                                        />
+                                    ) : (
+                                        <SimpleCardImage
+                                            imageUrl="card_back.jpeg"
+                                            cardName="Unknown"
+                                            width={244}
+                                            height={340}
+                                        />
+                                    )
                                 )}
                             </div>
 
                             {/* Oracle Text Section - Now below the card image on mobile, next to it on desktop */}
-                            {(card.type_line || card.oracle_text) && (
+                            {(displayTypeLine || displayOracleText) && (
                                 <div 
                                     className="w-full p-4 rounded-lg shadow-inner"
                                     style={{
@@ -180,7 +237,7 @@ export function CardDetailsPanel({
                                         borderWidth: '1px'
                                     }}
                                 >
-                                    {card.type_line && (
+                                    {displayTypeLine && (
                                         <p 
                                             className="font-semibold text-sm mb-2 pb-2 border-b"
                                             style={{
@@ -188,15 +245,15 @@ export function CardDetailsPanel({
                                                 color: palette.text.primary
                                             }}
                                         >
-                                            {card.type_line}
+                                            {displayTypeLine}
                                         </p>
                                     )}
-                                    {card.oracle_text && (
+                                    {displayOracleText && (
                                         <div 
                                             className="oracle-text text-sm"
                                             style={{ color: palette.text.primary }}
                                         >
-                                            {card.oracle_text.split('\n').map((paragraph, idx) => (
+                                            {displayOracleText.split('\n').map((paragraph, idx) => (
                                                 <p key={idx} className="mb-2">{paragraph}</p>
                                             ))}
                                         </div>

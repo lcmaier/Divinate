@@ -173,48 +173,96 @@ const sampleCard = {
 
 const sampleCard2 = {
   "_id": {
-    "$oid": "67d5ce21c2d2fb42e2d3f9a6"
+    "$oid": "67d5ce1fc2d2fb42e2d3f18c"
   },
-  "card_key": "otj-228",
+  "card_key": "mh3-237",
   "all_parts": [
     {
       "object": "related_card",
-      "id": "7b8aea8d-452a-4b23-bc78-8c7db54610d3",
+      "id": "f897d650-f1a2-4366-a025-f12c10310d96",
       "component": "combo_piece",
-      "name": "Roxanne, Starfall Savant",
-      "type_line": "Legendary Creature — Cat Druid",
-      "uri": "https://api.scryfall.com/cards/7b8aea8d-452a-4b23-bc78-8c7db54610d3"
+      "name": "Ajani, Nacatl Pariah // Ajani, Nacatl Avenger",
+      "type_line": "Legendary Creature — Cat Warrior // Legendary Planeswalker — Ajani",
+      "uri": "https://api.scryfall.com/cards/f897d650-f1a2-4366-a025-f12c10310d96"
     },
     {
       "object": "related_card",
-      "id": "00b41ca9-0bf0-41fc-af65-854e602ee007",
+      "id": "ce5c5bcf-1fdd-4d73-a92b-223292da00ca",
       "component": "token",
-      "name": "Meteorite",
-      "type_line": "Token Artifact",
-      "uri": "https://api.scryfall.com/cards/00b41ca9-0bf0-41fc-af65-854e602ee007"
+      "name": "Cat Warrior",
+      "type_line": "Token Creature — Cat Warrior",
+      "uri": "https://api.scryfall.com/cards/ce5c5bcf-1fdd-4d73-a92b-223292da00ca"
     }
   ],
-  "arena_id": 90574,
-  "artist": "Ina Wong",
+  "arena_id": 90800,
+  "artist": "Chris Rallis",
   "artist_ids": [
-    "66509051-6c00-40cf-a6a7-471b6db84fe0"
+    "a8e7b854-b15a-421a-b66d-6e68187ae285"
   ],
   "booster": true,
   "border_color": "black",
-  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
-  "cardmarket_id": 763960,
-  "cmc": 5,
-  "collector_number": "228",
-  "color_identity": [
-    "G",
-    "R"
+  "card_faces": [
+    {
+      "object": "card_face",
+      "name": "Ajani, Nacatl Pariah",
+      "mana_cost": "{1}{W}",
+      "type_line": "Legendary Creature — Cat Warrior",
+      "oracle_text": "When Ajani enters, create a 2/1 white Cat Warrior creature token.\nWhenever one or more other Cats you control die, you may exile Ajani, then return him to the battlefield transformed under his owner's control.",
+      "colors": [
+        "W"
+      ],
+      "power": "1",
+      "toughness": "2",
+      "flavor_text": "His pride denied him; his brother did not.",
+      "artist": "Chris Rallis",
+      "artist_id": "a8e7b854-b15a-421a-b66d-6e68187ae285",
+      "illustration_id": "3dff950b-68c7-4b2d-a8e5-419b140d897e",
+      "image_uris": {
+        "small": "https://cards.scryfall.io/small/front/0/d/0d16e8e0-31b2-4389-afd6-783c501f6fa0.jpg?1738269605",
+        "normal": "https://cards.scryfall.io/normal/front/0/d/0d16e8e0-31b2-4389-afd6-783c501f6fa0.jpg?1738269605",
+        "large": "https://cards.scryfall.io/large/front/0/d/0d16e8e0-31b2-4389-afd6-783c501f6fa0.jpg?1738269605",
+        "png": "https://cards.scryfall.io/png/front/0/d/0d16e8e0-31b2-4389-afd6-783c501f6fa0.png?1738269605",
+        "art_crop": "https://cards.scryfall.io/art_crop/front/0/d/0d16e8e0-31b2-4389-afd6-783c501f6fa0.jpg?1738269605",
+        "border_crop": "https://cards.scryfall.io/border_crop/front/0/d/0d16e8e0-31b2-4389-afd6-783c501f6fa0.jpg?1738269605"
+      }
+    },
+    {
+      "object": "card_face",
+      "name": "Ajani, Nacatl Avenger",
+      "mana_cost": "",
+      "type_line": "Legendary Planeswalker — Ajani",
+      "oracle_text": "+2: Put a +1/+1 counter on each Cat you control.\n0: Create a 2/1 white Cat Warrior creature token. When you do, if you control a red permanent other than Ajani, he deals damage equal to the number of creatures you control to any target.\n−4: Each opponent chooses an artifact, a creature, an enchantment, and a planeswalker from among the nonland permanents they control, then sacrifices the rest.",
+      "colors": [
+        "R",
+        "W"
+      ],
+      "color_indicator": [
+        "R",
+        "W"
+      ],
+      "loyalty": "3",
+      "artist": "Chris Rallis",
+      "artist_id": "a8e7b854-b15a-421a-b66d-6e68187ae285",
+      "illustration_id": "941b8c13-e0db-4ef8-8182-17ae977e65a7",
+      "image_uris": {
+        "small": "https://cards.scryfall.io/small/back/0/d/0d16e8e0-31b2-4389-afd6-783c501f6fa0.jpg?1738269605",
+        "normal": "https://cards.scryfall.io/normal/back/0/d/0d16e8e0-31b2-4389-afd6-783c501f6fa0.jpg?1738269605",
+        "large": "https://cards.scryfall.io/large/back/0/d/0d16e8e0-31b2-4389-afd6-783c501f6fa0.jpg?1738269605",
+        "png": "https://cards.scryfall.io/png/back/0/d/0d16e8e0-31b2-4389-afd6-783c501f6fa0.png?1738269605",
+        "art_crop": "https://cards.scryfall.io/art_crop/back/0/d/0d16e8e0-31b2-4389-afd6-783c501f6fa0.jpg?1738269605",
+        "border_crop": "https://cards.scryfall.io/border_crop/back/0/d/0d16e8e0-31b2-4389-afd6-783c501f6fa0.jpg?1738269605"
+      }
+    }
   ],
-  "colors": [
-    "G",
-    "R"
+  "cardmarket_id": 759962,
+  "cmc": 2,
+  "collector_number": "237",
+  "color_identity": [
+    "R",
+    "W"
   ],
   "digital": false,
-  "edhrec_rank": 4093,
+  "edhrec_rank": 6031,
   "finishes": [
     "nonfoil",
     "foil"
@@ -233,116 +281,93 @@ const sampleCard2 = {
   ],
   "has_goldfish_history": false,
   "highres_image": true,
-  "id": "11fbe52f-febd-49fc-8391-28d3efe9c3eb",
-  "illustration_id": "bebd4775-0a88-4de7-8a10-ef5fd5aa93fa",
+  "id": "0d16e8e0-31b2-4389-afd6-783c501f6fa0",
   "image_status": "highres_scan",
-  "image_uris": {
-    "small": "https://cards.scryfall.io/small/front/1/1/11fbe52f-febd-49fc-8391-28d3efe9c3eb.jpg?1712356193",
-    "normal": "https://cards.scryfall.io/normal/front/1/1/11fbe52f-febd-49fc-8391-28d3efe9c3eb.jpg?1712356193",
-    "large": "https://cards.scryfall.io/large/front/1/1/11fbe52f-febd-49fc-8391-28d3efe9c3eb.jpg?1712356193",
-    "png": "https://cards.scryfall.io/png/front/1/1/11fbe52f-febd-49fc-8391-28d3efe9c3eb.png?1712356193",
-    "art_crop": "https://cards.scryfall.io/art_crop/front/1/1/11fbe52f-febd-49fc-8391-28d3efe9c3eb.jpg?1712356193",
-    "border_crop": "https://cards.scryfall.io/border_crop/front/1/1/11fbe52f-febd-49fc-8391-28d3efe9c3eb.jpg?1712356193"
-  },
-  "keywords": [],
+  "keywords": [
+    "Transform"
+  ],
   "lang": "en",
-  "layout": "normal",
+  "layout": "transform",
   "legalities": {
-    "standard": "legal",
-    "future": "legal",
+    "standard": "not_legal",
+    "future": "not_legal",
     "historic": "legal",
     "timeless": "legal",
-    "gladiator": "legal",
-    "pioneer": "legal",
-    "explorer": "legal",
+    "gladiator": "banned",
+    "pioneer": "not_legal",
+    "explorer": "not_legal",
     "modern": "legal",
     "legacy": "legal",
     "pauper": "not_legal",
     "vintage": "legal",
-    "penny": "legal",
+    "penny": "not_legal",
     "commander": "legal",
     "oathbreaker": "legal",
-    "standardbrawl": "legal",
+    "standardbrawl": "not_legal",
     "brawl": "legal",
-    "alchemy": "legal",
+    "alchemy": "not_legal",
     "paupercommander": "not_legal",
-    "duel": "legal",
+    "duel": "restricted",
     "oldschool": "not_legal",
     "premodern": "not_legal",
     "predh": "not_legal"
   },
-  "mana_cost": "{3}{R}{G}",
-  "mtgo_id": 124367,
+  "mtgo_id": 126493,
   "multiverse_ids": [
-    655169
+    661753,
+    661754
   ],
-  "name": "Roxanne, Starfall Savant",
+  "name": "Ajani, Nacatl Pariah // Ajani, Nacatl Avenger",
   "nonfoil": true,
   "object": "card",
-  "oracle_id": "11765eaf-87a1-48bd-90c1-7a5f21be5918",
-  "oracle_text": "Whenever Roxanne enters or attacks, create a tapped colorless artifact token named Meteorite with \"When this token enters, it deals 2 damage to any target\" and \"{T}: Add one mana of any color.\"\nWhenever you tap an artifact token for mana, add one mana of any type that artifact token produced.",
+  "oracle_id": "2588f348-d7a3-46c8-9ace-dca53ed5ef99",
   "oversized": false,
-  "penny_rank": 5560,
-  "power": "4",
-  "preview": {
-    "source": "Dorasuta",
-    "source_uri": "https://dorasuta.jp/column/detail?aid=11026",
-    "previewed_at": "2024-03-27"
-  },
   "prices": {
-    "usd": "0.69",
-    "usd_foil": "0.74",
+    "usd": "10.08",
+    "usd_foil": "11.25",
     "usd_etched": null,
-    "eur": "0.57",
-    "eur_foil": "1.27",
-    "tix": "0.02"
+    "eur": "12.86",
+    "eur_foil": "15.72",
+    "tix": "6.86"
   },
-  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A11765eaf-87a1-48bd-90c1-7a5f21be5918&unique=prints",
-  "produced_mana": [
-    "B",
-    "G",
-    "R",
-    "U",
-    "W"
-  ],
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A2588f348-d7a3-46c8-9ace-dca53ed5ef99&unique=prints",
   "promo": false,
   "purchase_uris": {
-    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F544419%3Fpage%3D1",
-    "cardmarket": "https://www.cardmarket.com/en/Magic/Products/Singles/Outlaws-of-Thunder-Junction/Roxanne-Starfall-Savant?referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
-    "cardhoarder": "https://www.cardhoarder.com/cards/124367?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F541279%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products/Singles/Modern-Horizons-3/Ajani-Nacatl-Pariah-Ajani-Nacatl-Avenger?referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/126493?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
   },
-  "rarity": "rare",
+  "rarity": "mythic",
   "related_uris": {
-    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=655169&printed=false",
-    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=infinite&u=https%3A%2F%2Finfinite.tcgplayer.com%2Fsearch%3FcontentMode%3Darticle%26game%3Dmagic%26q%3DRoxanne%252C%2BStarfall%2BSavant",
-    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=infinite&u=https%3A%2F%2Finfinite.tcgplayer.com%2Fsearch%3FcontentMode%3Ddeck%26game%3Dmagic%26q%3DRoxanne%252C%2BStarfall%2BSavant",
-    "edhrec": "https://edhrec.com/route/?cc=Roxanne%2C+Starfall+Savant"
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=661753&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=infinite&u=https%3A%2F%2Finfinite.tcgplayer.com%2Fsearch%3FcontentMode%3Darticle%26game%3Dmagic%26q%3DAjani%252C%2BNacatl%2BPariah%2B%252F%252F%2BAjani%252C%2BNacatl%2BAvenger",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=infinite&u=https%3A%2F%2Finfinite.tcgplayer.com%2Fsearch%3FcontentMode%3Ddeck%26game%3Dmagic%26q%3DAjani%252C%2BNacatl%2BPariah%2B%252F%252F%2BAjani%252C%2BNacatl%2BAvenger",
+    "edhrec": "https://edhrec.com/route/?cc=Ajani%2C+Nacatl+Pariah"
   },
-  "released_at": "2024-04-19",
+  "released_at": "2024-06-14",
   "reprint": false,
   "reserved": false,
-  "rulings_uri": "https://api.scryfall.com/cards/11fbe52f-febd-49fc-8391-28d3efe9c3eb/rulings",
-  "scryfall_set_uri": "https://scryfall.com/sets/otj?utm_source=api",
-  "scryfall_uri": "https://scryfall.com/card/otj/228/roxanne-starfall-savant?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/0d16e8e0-31b2-4389-afd6-783c501f6fa0/rulings",
+  "scryfall_set_uri": "https://scryfall.com/sets/mh3?utm_source=api",
+  "scryfall_uri": "https://scryfall.com/card/mh3/237/ajani-nacatl-pariah-ajani-nacatl-avenger?utm_source=api",
   "security_stamp": "oval",
-  "set": "otj",
-  "set_id": "55a85ebe-644e-4bef-8be8-5290408be3d1",
-  "set_name": "Outlaws of Thunder Junction",
-  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aotj&unique=prints",
-  "set_type": "expansion",
-  "set_uri": "https://api.scryfall.com/sets/55a85ebe-644e-4bef-8be8-5290408be3d1",
+  "set": "mh3",
+  "set_id": "3ed80bb6-77e8-4aa7-8262-95377a38aba1",
+  "set_name": "Modern Horizons 3",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Amh3&unique=prints",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/3ed80bb6-77e8-4aa7-8262-95377a38aba1",
   "source": "scryfall",
   "story_spotlight": false,
-  "tcgplayer_id": 544419,
+  "tcgplayer_id": 541279,
   "textless": false,
-  "toughness": "3",
-  "type_line": "Legendary Creature — Cat Druid",
+  "type_line": "Legendary Creature — Cat Warrior // Legendary Planeswalker — Ajani",
   "updated_at": {
-    "$date": "2025-03-30T04:30:18.216Z"
+    "$date": "2025-03-31T04:30:27.931Z"
   },
-  "uri": "https://api.scryfall.com/cards/11fbe52f-febd-49fc-8391-28d3efe9c3eb",
+  "uri": "https://api.scryfall.com/cards/0d16e8e0-31b2-4389-afd6-783c501f6fa0",
   "variation": false
-};
+}
 
 // Sample for card-details-panel (proper raw prices)
 const sampleRawPriceData: RawPricePoint[] = [

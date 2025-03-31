@@ -9,6 +9,21 @@ export type PriceDataPoint = {
     [key: string]: any; // Allow additional properties
 };
 
+export type CardFace = {
+  name: string;
+  mana_cost?: string;
+  type_line?: string;
+  oracle_text?: string;
+  colors?: string[];
+  image_uris?: {
+    small?: string;
+    normal?: string;
+    large?: string;
+    png?: string;
+  };
+};
+
+
 export type CardDetails = {
     card_key: string;
     name: string;
@@ -21,6 +36,8 @@ export type CardDetails = {
         large?: string;
         png?: string;
     };
+    layout?: string;
+    card_faces?: CardFace[];
     color_identity?: string[];
     power?: string,
     toughness?: string,
@@ -35,7 +52,7 @@ export type CardDetails = {
       usd_foil?: string | null;
       usd_etched?: string | null;
     };
-    // New property to store the latest price data from our timeseries collection
+    // property to store the latest price data from our timeseries collection
     latest_prices?: {
         nonfoil?: {
             price: number;
