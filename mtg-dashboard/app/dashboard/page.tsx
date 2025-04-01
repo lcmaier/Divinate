@@ -2,9 +2,11 @@
 // currently using for testing, will develop dashboard homepage later
 "use client";
 
+import { useState } from "react";
 import { PriceHistoryChart } from "@/app/ui/price-history/price-chart-v2";
 import { CardDetailsPanel } from "../ui/card-details/card-details-panel";
 import { RawPricePoint } from "../lib/price-types";
+import SearchResultCard from "@/app/ui/price-history/search-result-card-v2";
 
 // Sample data for visualization during development
 const sampleData = [
@@ -435,6 +437,17 @@ const sampleRawPriceData: RawPricePoint[] = [
 
 
 export default function ChartTestPage() {
+  // State for selected cards
+  const [selectedCards, setSelectedCards] = useState<Record<string, boolean>>({});
+
+  // Handler for card selection
+  const handleCardSelect = (cardKey: string, selected: boolean) => {
+    setSelectedCards(prev => ({
+      ...prev,
+      [cardKey]: selected
+    }));
+  };
+
   return (
     <div className="space-y-8 p-8">
       <h1 className="text-2xl font-bold">Chart Testing Page</h1>
@@ -480,19 +493,38 @@ export default function ChartTestPage() {
       </div>
 
       {/* Advanced UI Testing */}
+
+      {/* View Details Panel */}
       <div className="space-y-8 p-8">
         <h1 className="text-2xl font-bold">Card Details Test Panel</h1>
 
         <div className="space-y-2 max-w-6xl mx-auto">
           <CardDetailsPanel
             card={sampleCard}
-            priceData={sampleRawPriceData}
+            days={90}
           />
         </div>
+
         <div className="space-y-2 max-w-6xl mx-auto">
           <CardDetailsPanel
             card={sampleCard2}
-            priceData={sampleRawPriceData}
+            days={90}
+          />
+        </div>
+
+        <div className="space-y-2 max-w-6xl mx-auto">
+          <SearchResultCard
+            card={sampleCard}
+            isSelected={selectedCards[sampleCard.card_key] || false}
+            onSelect={(selected) => handleCardSelect(sampleCard.card_key, selected)}
+          />
+        </div>
+
+        <div className="space-y-2 max-w-6xl mx-auto">
+          <SearchResultCard
+            card={sampleCard2}
+            isSelected={selectedCards[sampleCard.card_key] || false}
+            onSelect={(selected) => handleCardSelect(sampleCard.card_key, selected)}
           />
         </div>
       </div>

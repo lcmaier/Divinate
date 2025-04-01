@@ -2,7 +2,6 @@
 
 import React, { useState } from 'react';
 import { RotateCcw } from 'lucide-react';
-import Image from 'next/image';
 import SimpleCardImage from './simple-card-image';
 
 interface FlippableCardImageProps {
@@ -36,7 +35,7 @@ interface FlippableCardImageProps {
       }}
     >
       <div 
-        className="relative w-full h-full transition-transform duration-700 transform-style-preserve-3d"
+        className="relative w-full h-full transition-transform duration-550 transform-style-preserve-3d"
         style={{ 
           transformStyle: 'preserve-3d',
           transform: showBackFace ? 'rotateY(180deg)' : 'rotateY(0deg)',

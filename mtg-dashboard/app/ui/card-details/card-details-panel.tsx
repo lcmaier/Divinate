@@ -1,27 +1,163 @@
 // app/ui/card-details/card-details-panel.tsx
 'use client';
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { PriceHistoryChart } from "@/app/ui/price-history/price-chart-v2";
 import SimpleCardImage from "../card-image/simple-card-image";
 import { CardDetails } from "@/app/lib/card-data";
 import { usePriceChartData } from "@/app/hooks/usePriceChartData";
+import { CardFinish } from "@/app/lib/card-constants";
 import { RawPricePoint } from "@/app/lib/price-types";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { beleren } from '@/app/ui/fonts';
 import { formatCurrency } from "@/app/lib/utils";
-import { getPaletteFromColorIdentity, ColorPalette, colorlessPalette } from "@/app/lib/color-identities";
+import { getPaletteFromColorIdentity } from "@/app/lib/color-identities";
 import FlippableCardImage from "../card-image/flippable-card-image";
 
 interface CardDetailsPanelProps {
     card: CardDetails;
-    priceData: RawPricePoint[];
+    startDate?: string;
+    endDate?: string;
+    days?: number; // fallback if no start or end date
 }
 
 export function CardDetailsPanel({
     card,
-   priceData,
+   startDate,
+   endDate,
+   days = 90
 }: CardDetailsPanelProps) {
+    const [priceData, setPriceData] = useState<RawPricePoint[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+
+    // Add useEffect for data fetching
+    useEffect(() => {
+        if (!card.set || !card.collector_number) {
+            setIsLoading(false);
+            return;
+        }
+
+        const fetchPriceData = async () => {
+            setIsLoading(true);
+            setError(null);
+
+            let daysParam = days || 90; // Default 90 days if no days specified
+            let dateParams = '';
+
+            if (startDate && endDate) {
+                dateParams = `&startDate=${startDate}&endDate=${endDate}`;
+            } else {
+                dateParams = `&days=${daysParam}`;
+            }
+
+            try {
+                const response = await fetch(
+                    `/api/price-history?setCode=${card.set.toLowerCase()}&collectorNumber=${card.collector_number}${dateParams}&finish=all`
+                );
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch price data');
+                }
+
+                const data = await response.json();
+
+                // Convert the API response format to RawPricePoint
+                const rawPricePoints: RawPricePoint[] = [];
+
+                // Process all finishes from response
+                Object.entries(data.priceHistory).forEach(([finish, points]) => {
+                    if (Array.isArray(points)) {
+                        (points as any[]).forEach(point => {
+                            rawPricePoints.push({
+                                _id: `${finish}-${point.date}`,
+                                card_key: card.card_key,
+                                date: point.date,
+                                price: point.price,
+                                finish: finish as CardFinish,
+                                source: 'scryfall',
+                                metadata: {
+                                    name: card.name,
+                                    set: card.set || '',
+                                    collector_number: card.collector_number || '',
+                                    promo_types: [],
+                                    frame_effects: []
+                                }        
+                            });
+                        });
+                    }
+                });
+
+                // If we have no history but current prices, create price points
+                if (rawPricePoints.length === 0 && card.prices) {
+                    const now = new Date().toISOString();
+
+                    if (card.prices.usd) {
+                        rawPricePoints.push({
+                            _id: `nonfoil-${now}`,
+                            card_key: card.card_key,
+                            date: now,
+                            price: parseFloat(card.prices.usd),
+                            finish: 'nonfoil',
+                            source: 'scryfall',
+                            metadata: {
+                                name: card.name,
+                                set: card.set || '',
+                                collector_number: card.collector_number || '',
+                                promo_types: [],
+                                frame_effects: []
+                            }
+                        });
+                    }
+
+                    if (card.prices.usd_foil) {
+                        rawPricePoints.push({
+                            _id: `foil-${now}`,
+                            card_key: card.card_key,
+                            date: now,
+                            price: parseFloat(card.prices.usd_foil),
+                            finish: 'foil',
+                            source: 'scryfall',
+                            metadata: {
+                                name: card.name,
+                                set: card.set || '',
+                                collector_number: card.collector_number || '',
+                                promo_types: [],
+                                frame_effects: []
+                            }
+                        });
+                    }
+
+                    if (card.prices.usd_etched) {
+                        rawPricePoints.push({
+                            _id: `etched-${now}`,
+                            card_key: card.card_key,
+                            date: now,
+                            price: parseFloat(card.prices.usd_etched),
+                            finish: 'etched',
+                            source: 'scryfall',
+                            metadata: {
+                                name: card.name,
+                                set: card.set || '',
+                                collector_number: card.collector_number || '',
+                                promo_types: [],
+                                frame_effects: []
+                            }
+                        });
+                    }
+                }
+
+                setPriceData(rawPricePoints);
+            } catch (err) {
+                console.error('Error fetching price data:', err);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        fetchPriceData();
+    }, [card, startDate, endDate, days]);
+    
     // Use the hook to transform API data
     const { chartData, availableFinishes } = usePriceChartData(
         priceData,
@@ -87,6 +223,30 @@ export function CardDetailsPanel({
     // Get color palette based on card's color identity
     const palette = getPaletteFromColorIdentity(card.color_identity || []);
 
+    // loading data
+    if (isLoading) {
+        return (
+            <Card className="overflow-hidden relative">
+                <CardContent className="flex items-center justify-center p-12">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+                </CardContent>
+            </Card>
+        );
+    
+    }
+
+    if (error) {
+        return (
+            <Card className="overflow-hidden relative">
+                <CardContent className="p-8 text-center">
+                    <p className="text-red-500 mb-4">{error}</p>
+                    <p>Unable to load price data for this card.</p>
+                </CardContent>
+            </Card>
+        );
+    
+    }
+
     return (
         <Card 
             className="overflow-hidden relative"
@@ -117,7 +277,7 @@ export function CardDetailsPanel({
                                 className={`text-2xl font-bold ${beleren.className}`}
                                 style={{ color: palette.text.primary }}
                             >
-                                {card.name}
+                                {displayName}
                             </CardTitle>
                             <CardDescription 
                                 className="flex items-center gap-2 text-sm"
