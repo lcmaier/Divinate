@@ -9,7 +9,7 @@ import { CardDetailsPanel } from "../card-details/card-details-panel";
 import { EyeIcon, ClockIcon } from '@heroicons/react/24/outline';
 import { getPaletteFromColorIdentity } from "@/app/lib/color-identities";
 import { X } from "lucide-react";
-import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { beleren } from '@/app/ui/fonts';
@@ -109,7 +109,7 @@ export default function SearchResultCard({
 
     return (
         <Card
-            className={`relative overflow-hidden transition-all duration-300 ease-in-out hover:shadow-md ${isSelected ? 'ring-2' : 'ring-0'}`}
+            className={`relative overflow-hidden transition-all duration-300 ease-in-out hover:shadow-md p-3 ${isSelected ? 'ring-2' : 'ring-0'}`}
             style={{
                 borderColor: isSelected ? palette.primary : palette.border,
                 backgroundColor: isHovered ? `${palette.light}50` : 'white',
@@ -117,136 +117,109 @@ export default function SearchResultCard({
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
         >
-            {/* Selection checkbox */}
-            <div className="absolute top-4 left-4 z-10">
-                <Checkbox
-                    checked={isSelected}
-                    onCheckedChange={(checked) => onSelect(Boolean(checked))}
-                    id={`select-card-${card.card_key}`}
-                    className="data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600"
-                />
-            </div>
+            <CardContent className="p-0">
+                <div className="flex items-center">
+                    {/* Selection checkbox */}
+                    <div className="mr-3">
+                        <Checkbox
+                            checked={isSelected}
+                            onCheckedChange={(checked) => onSelect(Boolean(checked))}
+                            id={`select-card-${card.card_key}`}
+                            className="data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600"
+                        />
+                    </div>
 
-            <div className="flex flex-col md:flex-row">
-                {/* Card Image Column */}
-                <div className="md:w-1/4 lg:w-1/5 p-4 flex justify-center md:justify-start">
-                    <div className="relative group">
+                    {/* Card Image */}
+                    <div className="shrink-0 mr-4">
                         <SimpleCardImage
                             imageUrl={cardImageUrl}
                             cardName={card.name}
-                            width={146}
-                            height={204}
-                            className="rounded-lg shadow-md transition-transform duration-300 group-hover:scale-105"
+                            width={80}
+                            height={112}
+                            className="rounded-lg shadow-sm transition-transform duration-300 hover:scale-105"
                         />
                     </div>
-                </div>
 
-                {/* Content Column */}
-                <div className="md:w-3/4 lg:w-4/5 p-4 pt-0 md:pt-4 flex flex-col">
-                    {/* Card Header with Name, Set, Rarity */}
-                    <CardHeader className="p-0 pb-2">
-                        <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-2">
-                            <div>
-                                <CardTitle
-                                    className={`text-xl font-bold ${beleren.className}`}
+                    {/* Card Info */}
+                    <div className="flex-1 min-w-0">
+                        <div className="flex flex-col">
+                            {/* Card Title and Set Info */}
+                            <div className="flex items-baseline gap-2 mb-1">
+                                <h3 
+                                    className={`${beleren.className} text-base font-semibold truncate`}
                                     style={{ color: palette.text.primary }}
                                 >
                                     {card.name}
-                                </CardTitle>
-                                <CardDescription className="flex flex-wrap items-center gap-1 text-sm">
-                                    <span>{card.set_name} ({card.set?.toUpperCase()})</span>
-                                    <span style={{ color: palette.muted }}>•</span>
+                                </h3>
+                                <div className="flex items-center gap-1 text-xs text-gray-500">
+                                    <span>{card.set?.toUpperCase()}</span>
+                                    <span>•</span>
                                     <span>#{card.collector_number}</span>
-
                                     {card.rarity && (
-                                        <>
-                                            <span style={{ color: palette.muted }}>•</span>
-                                            <Badge
-                                                variant="outline"
-                                                className="text-xs font-medium px-2 py-0"
-                                                style={{
-                                                    backgroundColor: `${palette.secondary}15`,
-                                                    borderColor: `${palette.secondary}30`,
-                                                    color: palette.dark
-                                                }}
-                                            >
-                                                {card.rarity.charAt(0).toUpperCase() + card.rarity.slice(1)}
-                                            </Badge>
-                                        </>
-                                    )}
-
-                                    {card.released_at && (
-                                        <>
-                                            <span style={{ color: palette.muted }}>•</span>
-                                            <span className="text-sm" style={{ color: palette.text.secondary }}>Released {formatDate(card.released_at)}</span>
-                                        </>
-                                    )}
-                                </CardDescription>
-                            </div>
-                        </div>
-                    </CardHeader>
-
-                    {/* Card Type and Oracle Text */}
-                    <div className="mb-3">
-                        <div
-                            className="text-sm font-medium"
-                            style={{ color: palette.text.primary }}
-                        >
-                            {card.type_line}
-                        </div>
-                        <div
-                            className="text-sm italic line-clamp-2 mt-1"
-                            style={{ color: palette.text.secondary }}
-                        >
-                            {card.oracle_text}
-                        </div>
-                    </div>
-
-                    {/* Price Information */}
-                    <div className="mt-auto pt-3">
-                        <div className="flex flex-wrap gap-3">
-                            {/* Price boxes for each finish */}
-                            {finishes.map(finish => (
-                                <div
-                                    key={finish.type}
-                                    className="rounded-md shadow-sm p-2 flex items-center gap-3"
-                                    style={{ backgroundColor: getFinishBgColor(finish.type) }}
-                                >
-                                    <div className="flex flex-col">
-                                        <span className="text-xs font-medium" style={{ color: palette.text.secondary }}>
-                                            {getFinishDisplayName(finish.type)}
-                                        </span>
-                                        <span
-                                            className="text-lg font-semibold"
-                                            style={{ color: palette.text.primary }}
+                                        <Badge
+                                            variant="outline"
+                                            className="text-xs font-medium h-5 px-1.5"
+                                            style={{
+                                                backgroundColor: `${palette.secondary}15`,
+                                                borderColor: `${palette.secondary}30`,
+                                                color: palette.dark
+                                            }}
                                         >
-                                            {formatCurrency(finish.price || 0)}
-                                        </span>
-                                        {finish.daysStale > 0 && (
-                                            <div className={`flex items-center text-xs ${getStalenessColor(finish.daysStale)}`}>
-                                                <ClockIcon className="h-3 w-3 mr-1" />
-                                                <span>{finish.daysStale}d ago</span>
-                                            </div>
-                                        )}
-                                    </div>
+                                            {card.rarity.charAt(0).toUpperCase() + card.rarity.slice(1)}
+                                        </Badge>
+                                    )}
                                 </div>
-                            ))}
+                            </div>
 
-                            {/* View details button */}
-                            <button
-                                onClick={() => setIsPriceHistoryOpen(true)}
-                                className="h-full flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium text-blue-600 hover:text-blue-800 bg-gray-50 rounded-lg border border-gray-100 shadow-sm hover:bg-white transition-colors duration-200"
-                                style={{
-                                    color: palette.text.primary,
-                                }}
-                            >
-                                <EyeIcon className="h-4 w-4" />
-                                View Card Details
-                            </button>
+                            {/* Card Type */}
+                            <p className="text-xs mb-2 truncate" style={{ color: palette.text.secondary }}>
+                                {card.type_line}
+                            </p>
+                            
+                            {/* Price Boxes and Details Button */}
+                            <div className="flex items-center flex-wrap gap-2 mt-1">
+                                {finishes.map(finish => (
+                                    <div
+                                        key={finish.type}
+                                        className="rounded px-2 py-1 flex items-center"
+                                        style={{ backgroundColor: getFinishBgColor(finish.type) }}
+                                    >
+                                        <div className="flex items-baseline gap-1.5">
+                                            <span className="text-xs font-medium" style={{ color: palette.text.secondary }}>
+                                                {getFinishDisplayName(finish.type)}:
+                                            </span>
+                                            <span
+                                                className="text-sm font-semibold"
+                                                style={{ color: palette.text.primary }}
+                                            >
+                                                {formatCurrency(finish.price || 0)}
+                                            </span>
+                                            {finish.daysStale > 0 && (
+                                                <div className={`flex items-center text-xs ${getStalenessColor(finish.daysStale)}`}>
+                                                    <ClockIcon className="h-3 w-3 mr-0.5" />
+                                                    <span>{finish.daysStale}d</span>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                ))}
+                                
+                                <button
+                                    onClick={() => setIsPriceHistoryOpen(true)}
+                                    className="flex items-center justify-center gap-1 px-2 py-1 text-xs font-medium rounded border"
+                                    style={{
+                                        color: palette.text.primary,
+                                        borderColor: palette.border,
+                                    }}
+                                >
+                                    <EyeIcon className="h-3.5 w-3.5" />
+                                    Details
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            </CardContent>
 
             {/* Card Details Modal Panel */}
             {isPriceHistoryOpen && (
