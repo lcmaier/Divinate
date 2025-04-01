@@ -1,0 +1,6 @@
+# Files to ignore
+data/
+*.log
+node_modules
+credentials.txt
+__pycache__

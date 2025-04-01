@@ -148,3 +148,11 @@ input[type='number']::-webkit-outer-spin-button {
     @apply bg-background text-foreground;
   }
 }
+
+.transform-style-preserve-3d {
+  transform-style: preserve-3d;
+}
+
+.backface-hidden {
+  backface-visibility: hidden;
+}

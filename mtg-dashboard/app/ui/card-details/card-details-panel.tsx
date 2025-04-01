@@ -65,14 +65,12 @@ export function CardDetailsPanel({
         large: card.image_uris?.large,
     };
 
-    // Get the actual image URLs for display
-    const displayImageUrl = isDoubleFaced
-    ? (currentFaceIndex === 0 ? cardImageUrls.front?.normal : cardImageUrls.back?.normal)
-    : cardImageUrls.normal;
-
     const displayName = isDoubleFaced ? currentFace!.name : card.name;
     const displayTypeLine = isDoubleFaced ? currentFace!.type_line : card.type_line;
     const displayOracleText = isDoubleFaced ? currentFace!.oracle_text : card.oracle_text;
+    const displayPower = isDoubleFaced ? currentFace!.power : card.power;
+    const displayToughness = isDoubleFaced ? currentFace!.toughness : card.toughness;
+    const displayLoyalty = isDoubleFaced ? currentFace!.loyalty : card.loyalty;
 
 
     // Get image URLs
@@ -258,20 +256,20 @@ export function CardDetailsPanel({
                                             ))}
                                         </div>
                                     )}
-                                    {card.loyalty && (
+                                    {displayLoyalty && (
                                         <div 
                                             className="mt-2 text-right font-bold"
                                             style={{ color: palette.text.primary }}
                                         >
-                                            {card.loyalty}
+                                            {displayLoyalty}
                                         </div>
                                     )}
-                                    {card.power && card.toughness && (
+                                    {displayPower && displayToughness && (
                                         <div
                                             className="mt-2 text-right font-bold"
                                             style={{ color: palette.text.primary }}
                                         >
-                                            {card.power}/{card.toughness}
+                                            {displayPower}/{displayToughness}
                                         </div>
                                     )}
                                 </div>

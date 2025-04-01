@@ -27,35 +27,61 @@ interface FlippableCardImageProps {
     onFlip
   }: FlippableCardImageProps) {
     return (
-        <div className="relative group">
-            <div className="relative transition-all duration-300 transform perspective-1000">
-                <div className={`relative ${showBackFace ? 'opacity-0' : 'opacity-100'} transition-opacity duration-300`}>
-                    <SimpleCardImage
-                        imageUrl={frontImageUrl}
-                        cardName={frontCardName}
-                        width={width}
-                        height={height}
-                    />
-                </div>
-
-                <div className={`absolute top-0 left-0 ${showBackFace ? 'opacity-100' : 'opacity-0'} transition-opacity duration-300`}>
-                    <SimpleCardImage
-                        imageUrl={backImageUrl}
-                        cardName={backCardName}
-                        width={width}
-                        height={height}
-                    />
-                </div>
-            </div>
-
-            {/* Flip button */}
-            <button
-                onClick={onFlip}
-                className="absolute bottom-2 left-2 bg-white/80 hover:hb-white text-gray-800 rounded-full p-1.5 shadow-md opacity-70 group-hover:opacity-100 transition-opacity duration-200"
-                aria-label={showBackFace ? `Show ${frontCardName}` : `Show ${backCardName}`}
-            >
-                <RotateCcw className="h-5 w-5" />
-            </button>
+        <div 
+      className="relative group card-container"
+      style={{ 
+        perspective: '1000px',
+        width: `${width}px`, 
+        height: `${height}px` 
+      }}
+    >
+      <div 
+        className="relative w-full h-full transition-transform duration-700 transform-style-preserve-3d"
+        style={{ 
+          transformStyle: 'preserve-3d',
+          transform: showBackFace ? 'rotateY(180deg)' : 'rotateY(0deg)',
+        }}
+      >
+        {/* Front face */}
+        <div 
+          className="absolute w-full h-full backface-hidden"
+          style={{ 
+            backfaceVisibility: 'hidden',
+          }}
+        >
+          <SimpleCardImage
+            imageUrl={frontImageUrl}
+            cardName={frontCardName}
+            width={width}
+            height={height}
+          />
         </div>
+
+        {/* Back face */}
+        <div 
+          className="absolute w-full h-full backface-hidden"
+          style={{ 
+            backfaceVisibility: 'hidden',
+            transform: 'rotateY(180deg)',
+          }}
+        >
+          <SimpleCardImage
+            imageUrl={backImageUrl}
+            cardName={backCardName}
+            width={width}
+            height={height}
+          />
+        </div>
+      </div>
+
+      {/* Flip button */}
+      <button
+        onClick={onFlip}
+        className="absolute bottom-2 left-2 bg-white/80 hover:bg-white text-gray-800 rounded-full p-1.5 shadow-md opacity-50 group-hover:opacity-100 transition-opacity duration-200 z-10"
+        aria-label={showBackFace ? `Show ${frontCardName}` : `Show ${backCardName}`}
+      >
+        <RotateCcw className="h-5 w-5" />
+      </button>
+    </div>
     );
   }

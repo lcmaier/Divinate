@@ -21,6 +21,9 @@ export type CardFace = {
     large?: string;
     png?: string;
   };
+  power?: string;
+  toughness?: string;
+  loyalty?: string;
 };
 
 
