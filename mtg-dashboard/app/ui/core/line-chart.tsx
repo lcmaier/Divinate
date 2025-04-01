@@ -36,6 +36,8 @@ export interface LineChartProps {
         bottom?: number;
         left?: number;
     };
+    showVerticalReferenceLine?: boolean;
+    maxXAxisLabels?: number;
 }
 
 export function LineChart({
@@ -45,7 +47,6 @@ export function LineChart({
     xAxisKey,
     
     // Chart appearance 
-    height = 300,
     config,
     activeKeys,
     backgroundColor = 'transparent',
@@ -63,11 +64,13 @@ export function LineChart({
     
     // Misc options
     connectNulls = true,
-    margin = { top: 20, right: 30, left: 20, bottom: 5 }
+    margin = { top: 20, right: 30, left: 20, bottom: 5 },
+    showVerticalReferenceLine=true,
+    maxXAxisLabels = 10
 }: LineChartProps) {
     // Filter for only active data keys if specified
     const keysToRender = activeKeys || dataKeys;
-    
+
     // Filter config to only include keys that should be rendered
     const filteredConfig = useMemo(() => {
         return Object.entries(config)
@@ -88,9 +91,15 @@ export function LineChart({
                 data={data}
                 margin={margin}
             >
-                <CartesianGrid vertical={false} strokeDasharray="3 3" />
+                <CartesianGrid 
+                    vertical={false} 
+                    strokeDasharray="3 3"
+                    //stroke="rgba(0,0,0,0.1)"
+                />
                 <XAxis
                     dataKey={xAxisKey}
+                    allowDataOverflow={true}
+                    interval={Math.ceil(data.length / maxXAxisLabels)}
                     tickLine={false}
                     axisLine={false}
                     tickMargin={8}
@@ -108,8 +117,13 @@ export function LineChart({
                 
                 {tooltipContent ? (
                     <ChartTooltip
-                        cursor={false}
+                        cursor={showVerticalReferenceLine ? {
+                            stroke: "rgba(0,0,0,1)",
+                            strokeDasharray: "3 3",
+                            strokeWidth: 2.5
+                        }: false}
                         content={tooltipContent as any}
+                        
                     />
                 ) : (
                     <ChartTooltip cursor={false} />
@@ -117,9 +131,11 @@ export function LineChart({
 
                 {keysToRender.map((dataKey) => {
                     // Only render lines for valid data
-                    if (!data.some(item => item[dataKey] !== null && item[dataKey] !== undefined)) {
-                        return null;
-                    }
+                    const dataPointsForKey = data.filter(
+                        item => item[dataKey] !== null && item[dataKey] !== undefined
+                    );
+
+                    if (dataPointsForKey.length === 0) return null;
 
                     return (
                         <Line
@@ -131,16 +147,9 @@ export function LineChart({
                             connectNulls={connectNulls}
                             isAnimationActive={isAnimationActive}
                             animationDuration={animationDuration}
-                            dot={{
-                                r: 4,
-                                fill: `var(--color-${dataKey})`,
-                                stroke: "white",
-                                strokeWidth: 1,
-                            }}
+                            dot={false}
                             activeDot={{
                                 r: 6,
-                                stroke: "white",
-                                strokeWidth: 2,
                             }}
                         />
                     );

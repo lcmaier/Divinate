@@ -262,7 +262,7 @@ export default function SearchResultCard({
                         <div className="relative bg-white rounded-xl overflow-hidden shadow-2xl">
                             <button 
                                 onClick={() => setIsPriceHistoryOpen(false)}
-                                className="absolute top-4 right-4 z-20 text-gray-500 hover:text-gray-700 bg-white/30 hover:bg-white rounded-full p-2 shadow-sm transition-all duration-200" 
+                                className="absolute top-2 right-2 z-20 text-gray-500 hover:text-gray-700 bg-white/10 hover:bg-white rounded-full p-2 shadow-sm transition-all duration-200" 
                                 aria-label="Close modal"
                             >
                                 <X size={20} strokeWidth={2} />

@@ -3,4 +3,4 @@ data/
 *.log
 node_modules
 credentials.txt
-__pycache__
+**/__pycache__/
