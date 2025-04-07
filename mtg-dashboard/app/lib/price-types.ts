@@ -8,13 +8,6 @@ export interface RawPricePoint {
   price: number;
   finish: 'nonfoil' | 'foil' | 'etched';
   source: string;
-  metadata: {
-    name: string;
-    set: string;
-    collector_number: string;
-    promo_types: string[];
-    frame_effects: string[];
-  };
 }
 
 // Types for the transformed data used by your hook

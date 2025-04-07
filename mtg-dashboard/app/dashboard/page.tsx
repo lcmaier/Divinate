@@ -7,6 +7,8 @@ import { PriceHistoryChart } from "@/app/ui/price-history/price-chart-v2";
 import { CardDetailsPanel } from "../ui/card-details/card-details-panel";
 import { RawPricePoint } from "../lib/price-types";
 import SearchResultCard from "@/app/ui/price-history/search-result-card-v2";
+import { CardDetails } from "../lib/card-data";
+import SearchResults from "../ui/price-history/search-results-v2";
 
 // Sample data for visualization during development
 const sampleData = [
@@ -528,6 +530,88 @@ export default function ChartTestPage() {
           />
         </div>
       </div>
+
+      <div className="space-y-8 p-8">
+        <h1 className="text-2xl font-bold">Search Results V2 Test</h1>
+        
+        <div className="space-y-2 max-w-6xl mx-auto">
+          <SearchResults
+            results={[sampleCard, sampleCard2]} // Your sample cards from your test data
+            isLoading={false}
+            totalResults={2}
+            currentPage={1}
+            itemsPerPage={10}
+            sortBy="name_asc"
+            onPageChange={(page) => console.log(`Page changed to ${page}`)}
+            onItemsPerPageChange={(count) => console.log(`Items per page changed to ${count}`)}
+            onSortChange={(sort) => console.log(`Sort changed to ${sort}`)}
+            selectedCards={Object.keys(selectedCards)
+              .filter(key => selectedCards[key])
+              .map(key => [sampleCard, sampleCard2].find(card => card.card_key === key))
+              .filter(Boolean) as CardDetails[]}
+            onCardSelect={(card, selected) => handleCardSelect(card.card_key, selected)}
+            onCompareSelected={() => console.log('Compare selected cards')}
+          />
+        </div>
+        
+        {/* Test loading state */}
+        <div className="space-y-2 max-w-6xl mx-auto mt-8">
+          <h2 className="text-xl">Loading State</h2>
+          <SearchResults
+            results={[]}
+            isLoading={true}
+            totalResults={0}
+            currentPage={1}
+            itemsPerPage={10}
+            sortBy="name_asc"
+            onPageChange={() => {}}
+            onItemsPerPageChange={() => {}}
+            onSortChange={() => {}}
+            selectedCards={[]}
+            onCardSelect={() => {}}
+            onCompareSelected={() => {}}
+          />
+        </div>
+        
+        {/* Test empty state */}
+        <div className="space-y-2 max-w-6xl mx-auto mt-8">
+          <h2 className="text-xl">Empty State</h2>
+          <SearchResults
+            results={[]}
+            isLoading={false}
+            totalResults={0}
+            currentPage={1}
+            itemsPerPage={10}
+            sortBy="name_asc"
+            onPageChange={() => {}}
+            onItemsPerPageChange={() => {}}
+            onSortChange={() => {}}
+            selectedCards={[]}
+            onCardSelect={() => {}}
+            onCompareSelected={() => {}}
+          />
+        </div>
+        
+        {/* Test pagination */}
+        <div className="space-y-2 max-w-6xl mx-auto mt-8">
+          <h2 className="text-xl">Pagination Test</h2>
+          <SearchResults
+            results={[sampleCard, sampleCard2]}
+            isLoading={false}
+            totalResults={102} // Pretend we have 102 results
+            currentPage={5}  // Show middle page
+            itemsPerPage={10}
+            sortBy="name_asc"
+            onPageChange={(page) => console.log(`Page changed to ${page}`)}
+            onItemsPerPageChange={(count) => console.log(`Items per page changed to ${count}`)}
+            onSortChange={(sort) => console.log(`Sort changed to ${sort}`)}
+            selectedCards={[]}
+            onCardSelect={() => {}}
+            onCompareSelected={() => {}}
+          />
+        </div>
+      </div>
+
     </div>
   )
 }

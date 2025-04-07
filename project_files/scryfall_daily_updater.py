@@ -315,14 +315,6 @@ class DailyPriceUpdater:
                     "price": reg_price,
                     "finish": "nonfoil",
                     "source": "scryfall",
-                    # Metadata for future reconciliation with MTGGoldfish
-                    "metadata": {
-                        "name": card_data.get('name'),
-                        "set": card_data.get('set'),
-                        "collector_number": card_data.get('collector_number'),
-                        "promo_types": card_data.get('promo_types', []),
-                        "frame_effects": card_data.get('frame_effects', [])
-                    }
                 }
                 result.append(price_entry)
             except (ValueError, TypeError) as e:
@@ -339,14 +331,6 @@ class DailyPriceUpdater:
                     "price": foil_price,
                     "finish": "foil",
                     "source": "scryfall",
-                    # Metadata for future reconciliation with MTGGoldfish
-                    "metadata": {
-                        "name": card_data.get('name'),
-                        "set": card_data.get('set'),
-                        "collector_number": card_data.get('collector_number'),
-                        "promo_types": card_data.get('promo_types', []),
-                        "frame_effects": card_data.get('frame_effects', [])
-                    }
                 }
                 result.append(price_entry)
             except (ValueError, TypeError) as e:
@@ -363,14 +347,6 @@ class DailyPriceUpdater:
                     "price": foil_price,
                     "finish": "etched",
                     "source": "scryfall",
-                    # Metadata for future reconciliation with MTGGoldfish
-                    "metadata": {
-                        "name": card_data.get('name'),
-                        "set": card_data.get('set'),
-                        "collector_number": card_data.get('collector_number'),
-                        "promo_types": card_data.get('promo_types', []),
-                        "frame_effects": card_data.get('frame_effects', [])
-                    }
                 }
                 result.append(price_entry)
             except (ValueError, TypeError) as e:

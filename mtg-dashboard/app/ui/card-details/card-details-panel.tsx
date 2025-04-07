@@ -75,14 +75,7 @@ export function CardDetailsPanel({
                                 date: point.date,
                                 price: point.price,
                                 finish: finish as CardFinish,
-                                source: 'scryfall',
-                                metadata: {
-                                    name: card.name,
-                                    set: card.set || '',
-                                    collector_number: card.collector_number || '',
-                                    promo_types: [],
-                                    frame_effects: []
-                                }        
+                                source: 'scryfall',      
                             });
                         });
                     }
@@ -100,13 +93,6 @@ export function CardDetailsPanel({
                             price: parseFloat(card.prices.usd),
                             finish: 'nonfoil',
                             source: 'scryfall',
-                            metadata: {
-                                name: card.name,
-                                set: card.set || '',
-                                collector_number: card.collector_number || '',
-                                promo_types: [],
-                                frame_effects: []
-                            }
                         });
                     }
 
@@ -118,13 +104,6 @@ export function CardDetailsPanel({
                             price: parseFloat(card.prices.usd_foil),
                             finish: 'foil',
                             source: 'scryfall',
-                            metadata: {
-                                name: card.name,
-                                set: card.set || '',
-                                collector_number: card.collector_number || '',
-                                promo_types: [],
-                                frame_effects: []
-                            }
                         });
                     }
 
@@ -136,13 +115,6 @@ export function CardDetailsPanel({
                             price: parseFloat(card.prices.usd_etched),
                             finish: 'etched',
                             source: 'scryfall',
-                            metadata: {
-                                name: card.name,
-                                set: card.set || '',
-                                collector_number: card.collector_number || '',
-                                promo_types: [],
-                                frame_effects: []
-                            }
                         });
                     }
                 }
