@@ -382,13 +382,6 @@ const sampleRawPriceData: RawPricePoint[] = [
     price: 9.99,
     finish: "nonfoil",
     source: "scryfall",
-    metadata: {
-      name: "Jace, the Mind Sculptor",
-      set: "wwk",
-      collector_number: "31",
-      promo_types: [],
-      frame_effects: []
-    }
   },
   {
     _id: "2",
@@ -397,13 +390,6 @@ const sampleRawPriceData: RawPricePoint[] = [
     price: 10.50,
     finish: "nonfoil",
     source: "scryfall",
-    metadata: {
-      name: "Jace, the Mind Sculptor",
-      set: "wwk",
-      collector_number: "31",
-      promo_types: [],
-      frame_effects: []
-    }
   },
   {
     _id: "3",
@@ -412,13 +398,6 @@ const sampleRawPriceData: RawPricePoint[] = [
     price: 24.99,
     finish: "foil",
     source: "scryfall",
-    metadata: {
-      name: "Jace, the Mind Sculptor",
-      set: "wwk",
-      collector_number: "31",
-      promo_types: [],
-      frame_effects: []
-    }
   },
   {
     _id: "4",
@@ -427,13 +406,6 @@ const sampleRawPriceData: RawPricePoint[] = [
     price: 19.99,
     finish: "etched",
     source: "scryfall",
-    metadata: {
-      name: "Jace, the Mind Sculptor",
-      set: "wwk",
-      collector_number: "31",
-      promo_types: [],
-      frame_effects: []
-    }
   }
 ];
 
@@ -498,7 +470,7 @@ export default function ChartTestPage() {
 
       {/* View Details Panel */}
       <div className="space-y-8 p-8">
-        <h1 className="text-2xl font-bold">Card Details Test Panel</h1>
+        {/* <h1 className="text-2xl font-bold">Card Details Test Panel</h1>
 
         <div className="space-y-2 max-w-6xl mx-auto">
           <CardDetailsPanel
@@ -528,11 +500,11 @@ export default function ChartTestPage() {
             isSelected={selectedCards[sampleCard.card_key] || false}
             onSelect={(selected) => handleCardSelect(sampleCard.card_key, selected)}
           />
-        </div>
+        </div> */}
       </div>
 
       <div className="space-y-8 p-8">
-        <h1 className="text-2xl font-bold">Search Results V2 Test</h1>
+        {/* <h1 className="text-2xl font-bold">Search Results V2 Test</h1>
         
         <div className="space-y-2 max-w-6xl mx-auto">
           <SearchResults
@@ -552,10 +524,10 @@ export default function ChartTestPage() {
             onCardSelect={(card, selected) => handleCardSelect(card.card_key, selected)}
             onCompareSelected={() => console.log('Compare selected cards')}
           />
-        </div>
+        </div> */}
         
         {/* Test loading state */}
-        <div className="space-y-2 max-w-6xl mx-auto mt-8">
+        {/* <div className="space-y-2 max-w-6xl mx-auto mt-8">
           <h2 className="text-xl">Loading State</h2>
           <SearchResults
             results={[]}
@@ -571,10 +543,10 @@ export default function ChartTestPage() {
             onCardSelect={() => {}}
             onCompareSelected={() => {}}
           />
-        </div>
+        </div> */}
         
         {/* Test empty state */}
-        <div className="space-y-2 max-w-6xl mx-auto mt-8">
+        {/* <div className="space-y-2 max-w-6xl mx-auto mt-8">
           <h2 className="text-xl">Empty State</h2>
           <SearchResults
             results={[]}
@@ -590,7 +562,7 @@ export default function ChartTestPage() {
             onCardSelect={() => {}}
             onCompareSelected={() => {}}
           />
-        </div>
+        </div> */}
         
         {/* Test pagination */}
         <div className="space-y-2 max-w-6xl mx-auto mt-8">

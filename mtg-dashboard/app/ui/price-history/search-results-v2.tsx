@@ -107,7 +107,7 @@ export default function SearchResults({
     };
 
     return (
-        <div className="flex flex-col items-stretch">
+        <div className="flex flex-col items-stretch border-2 border-red-500">
             {/* Selected Cards Notification Bar */}
             <div 
                 className={`sticky top-2 z-20 transition-all duration-300 ease-in-out ${
@@ -258,79 +258,89 @@ export default function SearchResults({
 
             {/* Pagination */}
             {totalPages > 1 && (
-                <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 pt-4">
+            <div className="mt-6 border-t pt-4">
+                <div className="flex flex-wrap justify-between items-center gap-4">
                 <div className="text-sm text-gray-600">
                     Showing <span className="font-medium">{Math.min((currentPage - 1) * itemsPerPage + 1, totalResults)}</span>-
                     <span className="font-medium">{Math.min(currentPage * itemsPerPage, totalResults)}</span> of <span className="font-medium">{totalResults}</span> results
                 </div>
                 
-                <Pagination>
-                    <PaginationContent>
-                    <PaginationItem>
-                        <PaginationPrevious 
-                        onClick={() => onPageChange(currentPage - 1)}
-                        isActive={currentPage > 1}
-                        className={currentPage <= 1 ? "pointer-events-none opacity-50" : ""}
-                        />
-                    </PaginationItem>
+                <div className="flex items-center justify-center gap-1">
+                    {/* Previous Button */}
+                    <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => onPageChange(currentPage - 1)}
+                    disabled={currentPage <= 1}
+                    className="h-9 px-3"
+                    >
+                    <ChevronLeft className="h-4 w-4 mr-1" />
+                    Prev
+                    </Button>
                     
+                    {/* Page Numbers */}
+                    <div className="flex items-center">
                     {startPage > 1 && (
                         <>
-                        <PaginationItem>
-                            <PaginationLink 
+                        <Button
+                            variant={currentPage === 1 ? "outline" : "ghost"}
+                            size="sm"
                             onClick={() => onPageChange(1)}
-                            isActive={currentPage === 1}
-                            >
+                            className="h-9 w-9 p-0"
+                        >
                             1
-                            </PaginationLink>
-                        </PaginationItem>
+                        </Button>
+                        
                         {startPage > 2 && (
-                            <PaginationItem>
-                            <PaginationEllipsis />
-                            </PaginationItem>
+                            <span className="mx-1 text-gray-500">...</span>
                         )}
                         </>
                     )}
                     
                     {pages.map(page => (
-                        <PaginationItem key={page}>
-                        <PaginationLink 
-                            onClick={() => onPageChange(page)}
-                            isActive={currentPage === page}
+                        <Button
+                        key={page}
+                        variant={currentPage === page ? "outline" : "ghost"}
+                        size="sm"
+                        onClick={() => onPageChange(page)}
+                        className="h-9 w-9 p-0 mx-0.5"
                         >
-                            {page}
-                        </PaginationLink>
-                        </PaginationItem>
+                        {page}
+                        </Button>
                     ))}
                     
                     {endPage < totalPages && (
                         <>
                         {endPage < totalPages - 1 && (
-                            <PaginationItem>
-                            <PaginationEllipsis />
-                            </PaginationItem>
+                            <span className="mx-1 text-gray-500">...</span>
                         )}
-                        <PaginationItem>
-                            <PaginationLink 
+                        
+                        <Button
+                            variant={currentPage === totalPages ? "outline" : "ghost"}
+                            size="sm"
                             onClick={() => onPageChange(totalPages)}
-                            isActive={currentPage === totalPages}
-                            >
+                            className="h-9 w-9 p-0"
+                        >
                             {totalPages}
-                            </PaginationLink>
-                        </PaginationItem>
+                        </Button>
                         </>
                     )}
+                    </div>
                     
-                    <PaginationItem>
-                        <PaginationNext 
-                        onClick={() => onPageChange(currentPage + 1)}
-                        isActive={currentPage < totalPages}
-                        className={currentPage >= totalPages ? "pointer-events-none opacity-50" : ""}
-                        />
-                    </PaginationItem>
-                    </PaginationContent>
-                </Pagination>
+                    {/* Next Button */}
+                    <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => onPageChange(currentPage + 1)}
+                    disabled={currentPage >= totalPages}
+                    className="h-9 px-3"
+                    >
+                    Next
+                    <ChevronRight className="h-4 w-4 ml-1" />
+                    </Button>
                 </div>
+                </div>
+            </div>
             )}
             </div>
     );

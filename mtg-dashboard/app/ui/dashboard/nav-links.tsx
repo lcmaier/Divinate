@@ -16,7 +16,7 @@ import clsx from 'clsx';
 const links = [
   { name: 'Home', href: '/dashboard', icon: HomeIcon },
   { name: 'Blind Seer', href: '/dashboard/blind-seer', icon: ChartBarIcon },
-//   { name: 'Blind Seer v2', href:'/dashboard/blind-seer-v2', icon: ChartBarIcon },
+  { name: 'Blind Seer v3', href:'/dashboard/blind-seer-v3', icon: ChartBarIcon },
 //   { name: 'MongoDB Status', href: '/dashboard/mongodb-status', icon: ServerIcon },
   // {
   //   name: 'Invoices',
