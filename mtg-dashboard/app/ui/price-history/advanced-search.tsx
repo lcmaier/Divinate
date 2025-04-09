@@ -1,6 +1,7 @@
 // app/ui/price-history/advanced-search.tsx
 'use client';
 
+import { useRef, useState, useEffect } from 'react';
 import { Settings, ChevronUp, ChevronDown } from 'lucide-react';
 import { CARD_FORMATS, CARD_RARITIES } from '@/app/lib/card-constants';
 
@@ -37,6 +38,17 @@ export default function AdvancedSearch({
     clearFilters,
     onSubmit
 }: AdvancedSearchProps) {
+    const contentRef = useRef<HTMLDivElement>(null);
+    const [contentHeight, setContentHeight] = useState(0);
+    
+    // Measure content height when component mounts or content changes
+    useEffect(() => {
+        if (contentRef.current) {
+            const height = contentRef.current.scrollHeight;
+            setContentHeight(height);
+        }
+    }, [isOpen, cardName, setCode, manaCost, selectedRarities, selectedFormats]);
+
     // handle form submission
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -57,117 +69,127 @@ export default function AdvancedSearch({
                 {isOpen ? <ChevronUp className="h-4 w-4 ml-1" /> : <ChevronDown className="h-4 w-4 ml-1" />}
             </button>
 
-            {/* Advanced Search Fields */}
-            {isOpen && (
-                <form onSubmit={handleSubmit} className="bg-gray-50 p-4 rounded-lg border border-gray-200 mt-2 space-y-4">
-                    {/* First Row of Advanced Search Fields */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {/* Card Name */}
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Card Name</label>
-                            <input
-                                type="text"
-                                className="w-full px-4 py-2 rounded-lg border border-gray-300"
-                                placeholder="e.g., Thoughseize"
-                                value={cardName}
-                                onChange={(e) => setCardName(e.target.value)}
-                            />
+            {/* Advanced Search Fields with Dropdown Animation */}
+            <div
+                className="overflow-hidden transition-all duration-300 ease-in-out"
+                style={{
+                    maxHeight: isOpen ? `${contentHeight}px` : '0',
+                    opacity: isOpen ? 1 : 0,
+                    marginTop: isOpen? '0.5rem' : '0',
+                    transform: isOpen ? 'translateY(0)' : 'translateY(-8px)',
+                }}
+            >
+                <div ref={contentRef}>
+                    <form onSubmit={handleSubmit} className="bg-gray-50 p-4 rounded-lg border border-gray-200 mt-2 space-y-4">
+                        {/* First Row of Advanced Search Fields */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            {/* Card Name */}
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Card Name</label>
+                                <input
+                                    type="text"
+                                    className="w-full px-4 py-2 rounded-lg border border-gray-300"
+                                    placeholder="e.g., Thoughseize"
+                                    value={cardName}
+                                    onChange={(e) => setCardName(e.target.value)}
+                                />
+                            </div>
+
+                            {/* Set */}
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Set</label>
+                                <input
+                                    type="text"
+                                    className="w-full px-4 py-2 rounded-lg border border-gray-300"
+                                    placeholder="e.g., Theros or THS"
+                                    value={setCode}
+                                    onChange={(e) => setSetCode(e.target.value)}
+                                />
+                            </div>
+                        </div>
+                        
+                        {/* Second Row of Advanced Search Fields */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            {/* Mana Cost */}
+                            <div>
+                                <label className="grid grid-cols-1 md:grid-cols-2 gap-4">Mana Cost</label>
+                                <input
+                                    type="text"
+                                    className="w-full px-4 py-2 rounded-lg border border-gray-300"
+                                    placeholder="e.g., 1B, 1WG/R"
+                                    value={manaCost}
+                                    onChange={(e) => setManaCost(e.target.value)}
+                                />
+                            </div>
+
+                            {/* Rarity Buttons */}
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Rarity</label>
+                                <div className="flex flex-wrap gap-2">
+                                    {CARD_RARITIES.map(rarity => (
+                                        <button
+                                            key={rarity}
+                                            type="button"
+                                            className={`px-3 py-1 rounded-full text-sm ${
+                                                selectedRarities.includes(rarity)
+                                                ? "bg-blue-100 text-blue-800 border border-blue-300"
+                                                : "bg-gray-100 text-gray-800 border-gray-200 hover:bg-gray-200"
+                                            }`}
+                                            onClick={() => toggleRarity(rarity)}
+                                        >
+                                            {rarity}
+                                        </button>
+                                    ))}
+                                </div>
+                                <div className="text-xs text-gray-500 mt-1">
+                                Click to toggle rarity filters
+                            </div>
+                            </div>
                         </div>
 
-                        {/* Set */}
+                        {/* Format Legality Buttons */}
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Set</label>
-                            <input
-                                type="text"
-                                className="w-full px-4 py-2 rounded-lg border border-gray-300"
-                                placeholder="e.g., Theros or THS"
-                                value={setCode}
-                                onChange={(e) => setSetCode(e.target.value)}
-                            />
-                        </div>
-                    </div>
-                    
-                    {/* Second Row of Advanced Search Fields */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {/* Mana Cost */}
-                        <div>
-                            <label className="grid grid-cols-1 md:grid-cols-2 gap-4">Mana Cost</label>
-                            <input
-                                type="text"
-                                className="w-full px-4 py-2 rounded-lg border border-gray-300"
-                                placeholder="e.g., 1B, 1WG/R"
-                                value={manaCost}
-                                onChange={(e) => setManaCost(e.target.value)}
-                            />
-                        </div>
-
-                        {/* Rarity Buttons */}
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Rarity</label>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">Format Legality</label>
                             <div className="flex flex-wrap gap-2">
-                                {CARD_RARITIES.map(rarity => (
+                                {CARD_FORMATS.map(format => (
                                     <button
-                                        key={rarity}
+                                        key={format}
                                         type="button"
                                         className={`px-3 py-1 rounded-full text-sm ${
-                                            selectedRarities.includes(rarity)
+                                            selectedFormats.includes(format)
                                             ? "bg-blue-100 text-blue-800 border border-blue-300"
-                                            : "bg-gray-100 text-gray-800 border-gray-200 hover:bg-gray-200"
+                                            : "bg-gray-100 text-gray-800 border border-gray-200 hover:bg-gray-200"
                                         }`}
-                                        onClick={() => toggleRarity(rarity)}
+                                        onClick={() => toggleFormat(format)}
                                     >
-                                        {rarity}
+                                        {format}
                                     </button>
                                 ))}
                             </div>
                             <div className="text-xs text-gray-500 mt-1">
-                            Click to toggle rarity filters
+                                Click to toggle format legality filters
+                            </div>
                         </div>
-                        </div>
-                    </div>
 
-                    {/* Format Legality Buttons */}
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Format Legality</label>
-                        <div className="flex flex-wrap gap-2">
-                            {CARD_FORMATS.map(format => (
-                                <button
-                                    key={format}
-                                    type="button"
-                                    className={`px-3 py-1 rounded-full text-sm ${
-                                        selectedFormats.includes(format)
-                                        ? "bg-blue-100 text-blue-800 border border-blue-300"
-                                        : "bg-gray-100 text-gray-800 border border-gray-200 hover:bg-gray-200"
-                                    }`}
-                                    onClick={() => toggleFormat(format)}
-                                >
-                                    {format}
-                                </button>
-                            ))}
+                        {/* Clear/Apply buttons for Advanced Search */}
+                        <div className="flex justify-end space-x-3 pt-2">
+                            <button
+                                type="button"
+                                className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
+                                onClick={clearFilters}
+                            >
+                                Clear Filters
+                            </button>
+                            <button
+                                type="submit"
+                                className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700"
+                            >
+                                Apply Filters
+                            </button>
                         </div>
-                        <div className="text-xs text-gray-500 mt-1">
-                            Click to toggle format legality filters
-                        </div>
-                    </div>
-
-                    {/* Clear/Apply buttons for Advanced Search */}
-                    <div className="flex justify-end space-x-3 pt-2">
-                        <button
-                            type="button"
-                            className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
-                            onClick={clearFilters}
-                        >
-                            Clear Filters
-                        </button>
-                        <button
-                            type="submit"
-                            className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700"
-                        >
-                            Apply Filters
-                        </button>
-                    </div>
-                </form>
-            )}
+                    </form>
+                </div>
+            </div>
         </>
     );
 }

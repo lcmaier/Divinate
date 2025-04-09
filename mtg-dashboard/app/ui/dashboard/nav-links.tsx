@@ -15,8 +15,15 @@ import clsx from 'clsx';
 // Depending on the size of the application, this would be stored in a database.
 const links = [
   { name: 'Home', href: '/dashboard', icon: HomeIcon },
-  { name: 'Blind Seer', href: '/dashboard/blind-seer', icon: ChartBarIcon },
-  { name: 'Blind Seer v3', href:'/dashboard/blind-seer-v3', icon: ChartBarIcon },
+  { name: 'Blind Seer', href: '/dashboard/blind-seer', icon: ({ className }: { className?: string }) => (
+    <div className={className} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <img 
+          src="/blind-seer-icon.png" 
+          alt="Blind Seer" 
+          style={{ width: '65%', height: '65%', objectFit: 'contain' }}
+        />
+      </div>
+  ) },
 //   { name: 'MongoDB Status', href: '/dashboard/mongodb-status', icon: ServerIcon },
   // {
   //   name: 'Invoices',

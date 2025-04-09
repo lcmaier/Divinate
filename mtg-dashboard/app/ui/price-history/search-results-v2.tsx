@@ -107,7 +107,7 @@ export default function SearchResults({
     };
 
     return (
-        <div className="flex flex-col items-stretch border-2 border-red-500">
+        <div className="flex flex-col items-stretch gap-4">
             {/* Selected Cards Notification Bar */}
             <div 
                 className={`sticky top-2 z-20 transition-all duration-300 ease-in-out ${
