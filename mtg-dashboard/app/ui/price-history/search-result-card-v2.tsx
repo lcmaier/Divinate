@@ -18,6 +18,9 @@ interface SearchResultCardProps {
     card: CardDetails;
     isSelected: boolean;
     onSelect: (selected: boolean) => void;
+    // need start and end date to pass to card-details-panel
+    startDate?: string;
+    endDate?: string;
 }
 
 interface FinishPrice {
@@ -29,7 +32,9 @@ interface FinishPrice {
 export default function SearchResultCard({
     card,
     isSelected,
-    onSelect
+    onSelect,
+    startDate = '',
+    endDate = '',
 }: SearchResultCardProps) {
     const [isPriceHistoryOpen, setIsPriceHistoryOpen] = useState(false);
     const [isHovered, setIsHovered] = useState(false);
@@ -240,7 +245,11 @@ export default function SearchResultCard({
                             >
                                 <X size={20} strokeWidth={2} />
                             </button>
-                            <CardDetailsPanel card={card} />
+                            <CardDetailsPanel 
+                                card={card}
+                                startDate={startDate} 
+                                endDate={endDate}
+                            />
                         </div>
                     </div>
                 </div>

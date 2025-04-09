@@ -29,6 +29,9 @@ export default function BlindSeer() {
   const [selectedFormats, setSelectedFormats] = useState<string[]>([]);
   const [selectedCards, setSelectedCards] = useState<CardDetails[]>([]);
 
+  // debugging logs
+  console.log("BlindSeer render:", { startDate, endDate });
+
   // Search hook
   const {
     isLoading,
@@ -113,6 +116,24 @@ export default function BlindSeer() {
     }
   };
 
+  useEffect(() => {
+    // When dates change, update the search results if a search has already been performed
+    if (searchPerformed && (startDate || endDate)) {
+      // Re-run the current search with new date parameters
+      performSearch({
+        name: searchQuery,
+        setCode,
+        manaCost,
+        rarities: selectedRarities,
+        formats: selectedFormats,
+        startDate,
+        endDate,
+        page: 1
+      });
+    }
+  }, [startDate, endDate]); // Only trigger when dates change
+  
+
   // Clear all filters
   const clearFilters = () => {
     setCardName('');
@@ -139,6 +160,10 @@ export default function BlindSeer() {
           <SearchBar
             onSubmit={handleSearch}
             isLoading={isLoading}
+            startDate={startDate}
+            setStartDate={setStartDate}
+            endDate={endDate}
+            setEndDate={setEndDate}
           />
           {/* Advanced Search Fields */}
           <AdvancedSearch 
@@ -197,6 +222,8 @@ export default function BlindSeer() {
             selectedCards={selectedCards}
             onCardSelect={handleCardSelect}
             onCompareSelected={handleCompareSelected}
+            startDate={startDate}
+            endDate={endDate}
           />
         </div>
       ) : (

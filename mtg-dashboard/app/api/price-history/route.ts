@@ -9,6 +9,9 @@ export async function GET(request: NextRequest) {
     const collectorNumber = searchParams.get('collectorNumber');
     const days = parseInt(searchParams.get('days') || '30');
     const finish = searchParams.get('finish') || 'all';
+    const customStartDate = searchParams.get('startDate');
+    const customEndDate = searchParams.get('endDate');
+
 
     if (!setCode || !collectorNumber) {
         return NextResponse.json(
@@ -40,9 +43,35 @@ export async function GET(request: NextRequest) {
             );
         }
 
-        // Calculate start date
-        const startDate = new Date();
-        startDate.setDate(startDate.getDate() - days);
+        // Date filter logic - use custom dates if provided, otherwise fall back to days
+        let dateFilter = {};
+
+        if (customStartDate || customEndDate) {
+            dateFilter = {};
+            
+            if (customStartDate) {
+                dateFilter = { 
+                    ...dateFilter, 
+                    $gte: new Date(customStartDate) 
+                };
+            }
+            
+            if (customEndDate) {
+                // Add one day to end date to include the full end date (up to midnight)
+                const endDateObj = new Date(customEndDate);
+                endDateObj.setDate(endDateObj.getDate() + 1);
+                
+                dateFilter = { 
+                    ...dateFilter, 
+                    $lt: endDateObj 
+                };
+            }
+        } else {
+            // Fall back to days-based calculation
+            const startDate = new Date();
+            startDate.setDate(startDate.getDate() - days);
+            dateFilter = { $gte: startDate };
+        }
 
         // Create query based on finish selection
         let finishQuery = {};
@@ -57,7 +86,7 @@ export async function GET(request: NextRequest) {
         const priceHistory = await db.collection(COLLECTIONS.card_prices)
             .find({
                 card_key,
-                date: { $gte: startDate },
+                date: dateFilter,
                 finish: finishQuery
             })
             .sort({ date: 1 })

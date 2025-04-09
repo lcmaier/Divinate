@@ -7,12 +7,21 @@ import { Search, Calendar } from 'lucide-react';
 interface SearchBarProps {
     onSubmit: (query: string, startDate: string, endDate: string) => void;
     isLoading: boolean;
+    startDate?: string;
+    setStartDate?: (date: string) => void;
+    endDate?: string;
+    setEndDate?: (date: string) => void;
 }
 
-export default function SearchBar({ onSubmit, isLoading }: SearchBarProps) {
+export default function SearchBar({ 
+    onSubmit, 
+    isLoading,
+    startDate = '',
+    setStartDate = () => {},
+    endDate = '',
+    setEndDate = () => {} 
+  }: SearchBarProps) {
     const [searchQuery, setSearchQuery] = useState('');
-    const [startDate, setStartDate] = useState('');
-    const [endDate, setEndDate] = useState('');
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();

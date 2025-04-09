@@ -21,15 +21,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 
@@ -46,6 +37,8 @@ interface SearchResultsProps {
     selectedCards: CardDetails[];
     onCardSelect: (card: CardDetails, selected: boolean) => void;
     onCompareSelected: () => void;
+    startDate?: string;
+    endDate?: string;
 }
 
 export default function SearchResults({
@@ -60,7 +53,9 @@ export default function SearchResults({
     onSortChange,
     selectedCards,
     onCardSelect,
-    onCompareSelected
+    onCompareSelected,
+    startDate,
+    endDate
 }: SearchResultsProps) {
     // Sort options
     const sortOptions = [
@@ -234,6 +229,8 @@ export default function SearchResults({
                     card={card}
                     isSelected={selectedCards.some(c => c.card_key === card.card_key)}
                     onSelect={(selected) => onCardSelect(card, selected)}
+                    startDate={startDate}
+                    endDate={endDate}
                     />
                 ))
                 ) : (
